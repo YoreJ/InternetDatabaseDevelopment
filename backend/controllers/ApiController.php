@@ -52,16 +52,18 @@ class ApiController extends Controller
     public function actionLogin()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    
-        $username = \Yii::$app->request->get('username');
-        $password = \Yii::$app->request->get('password');
-    
+
+        $rawBody = \Yii::$app->request->getRawBody();
+        $data = json_decode($rawBody, true);
+        $username = isset($data['username']) ? $data['username'] : null;
+        $password = isset($data['password']) ? $data['password'] : null;
+
         if ($username !== null && $password !== null) {
             // 查询数据库检查用户名和密码是否匹配
             $user = Users::find()
                 ->where(['Username' => $username])
                 ->one();
-    
+
             if ($user !== null && ($password == $user->Password)) {
                 // 用户名和密码匹配
                 return ['status' => 1];
@@ -69,6 +71,8 @@ class ApiController extends Controller
                 // 用户名和密码不匹配
                 return ['status' => 0];
             }
+        } else {
+            return ['status' => 0, 'message' => '缺少用户名或密码'];
         }
     }
 
@@ -77,34 +81,31 @@ class ApiController extends Controller
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $username = \Yii::$app->request->get('username');
-        $password = \Yii::$app->request->get('password');
+        $rawBody = \Yii::$app->request->getRawBody();
+        $data = json_decode($rawBody, true);
+        $username = isset($data['username']) ? $data['username'] : null;
+        $password = isset($data['password']) ? $data['password'] : null;
 
-        // 查询数据库中最大的 UserID
-        $maxUserID = Users::find()
-            ->select('MAX(UserID)')
-            ->scalar(); // 获取最大的 UserID 值
+        if ($username !== null && $password !== null) {
+            // 检查用户名是否已存在
+            $existingUser = Users::find()
+                ->where(['Username' => $username])
+                ->one();
 
-        $newUserID = $maxUserID + 1;
+            if ($existingUser !== null) {
+                return ['status' => 0, 'message' => '用户已存在'];
+            }
 
-        $existingUser = Users::find()
-            ->where(['Username' => $username])
-            ->one();
-
-        if ($existingUser !== null) {
-            return ['status' => 0, 'message' => '用户已存在'];
-        } else {
             $user = new Users();
-            $user->UserID = $newUserID; // 设置新用户的 UserID
             $user->Username = $username;
-            // 在存储密码之前，应该对密码进行哈希处理,但是暂时忽略
             $user->Password = $password;
-
             if ($user->save()) {
                 return ['status' => 1, 'message' => '注册成功'];
             } else {
-                return ['status' => -1, 'message' => '保存失败'];
+                return ['status' => 0, 'message' => '注册失败'];
             }
+        } else {
+            return ['status' => 0, 'message' => '缺少用户名或密码'];
         }
     }
 
