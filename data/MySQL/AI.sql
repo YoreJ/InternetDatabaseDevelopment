@@ -1,0 +1,164 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS AI;
+
+-- 切换到 AI 数据库
+USE AI;
+
+-- 创建用户表
+CREATE TABLE Users (
+    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Role ENUM('admin', 'user') DEFAULT 'user',
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 创建对话表
+CREATE TABLE Conversations (
+    ConversationID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    StartedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    EndedAt TIMESTAMP NULL,
+    Status VARCHAR(50) DEFAULT 'active',
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+-- 创建消息表
+CREATE TABLE Messages (
+    MessageID INT AUTO_INCREMENT PRIMARY KEY,
+    ConversationID INT NOT NULL,
+    Sender ENUM('user', 'model') NOT NULL,
+    Content TEXT NOT NULL,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ConversationID) REFERENCES Conversations(ConversationID)
+);
+
+-- 创建文章表
+CREATE TABLE Articles (
+    ArticleID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    Content TEXT NOT NULL,
+    AuthorID INT NOT NULL,
+    PublishedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ViewCount INT DEFAULT 0,
+    LikeCount INT DEFAULT 0,
+    FOREIGN KEY (AuthorID) REFERENCES Users(UserID)
+);
+
+-- 创建视频表
+CREATE TABLE Videos (
+    VideoID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    URL VARCHAR(255) NOT NULL,
+    UserID INT NOT NULL,
+    UploadedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ViewCount INT DEFAULT 0,
+    LikeCount INT DEFAULT 0,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+-- 创建网站访问表
+CREATE TABLE WebsiteVisits (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    VisitCount INT DEFAULT 0
+);
+
+-- 创建文章评论表
+CREATE TABLE ArticleComments (
+    CommentID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    ArticleID INT NOT NULL,
+    Content TEXT NOT NULL,
+    CommentedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (ArticleID) REFERENCES Articles(ArticleID)
+);
+
+-- 创建视频评论表
+CREATE TABLE VideoComments (
+    CommentID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    VideoID INT NOT NULL,
+    Content TEXT NOT NULL,
+    CommentedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (VideoID) REFERENCES Videos(VideoID)
+);
+
+-- 创建文章点赞表
+CREATE TABLE ArticleLikes (
+    LikeID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    ArticleID INT NOT NULL,
+    LikedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (ArticleID) REFERENCES Articles(ArticleID)
+);
+
+-- 创建视频点赞表
+CREATE TABLE VideoLikes (
+    LikeID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    VideoID INT NOT NULL,
+    LikedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (VideoID) REFERENCES Videos(VideoID)
+);
+
+-- 创建文章点赞数更新触发器
+DELIMITER //
+
+CREATE TRIGGER UpdateArticleLikeCount
+AFTER INSERT ON ArticleLikes
+FOR EACH ROW
+BEGIN
+    UPDATE Articles
+    SET LikeCount = (SELECT COUNT(*) FROM ArticleLikes WHERE ArticleID = NEW.ArticleID)
+    WHERE ArticleID = NEW.ArticleID;
+END //
+
+DELIMITER ;
+
+-- 创建视频点赞数更新触发器
+DELIMITER //
+
+CREATE TRIGGER UpdateVideoLikeCount
+AFTER INSERT ON VideoLikes
+FOR EACH ROW
+BEGIN
+    UPDATE Videos
+    SET LikeCount = (SELECT COUNT(*) FROM VideoLikes WHERE VideoID = NEW.VideoID)
+    WHERE VideoID = NEW.VideoID;
+END //
+
+DELIMITER ;
+
+-- 创建文章点赞数更新触发器（删除点赞时更新）
+DELIMITER //
+
+CREATE TRIGGER UpdateArticleLikeCountAfterDelete
+AFTER DELETE ON ArticleLikes
+FOR EACH ROW
+BEGIN
+    UPDATE Articles
+    SET LikeCount = (SELECT COUNT(*) FROM ArticleLikes WHERE ArticleID = OLD.ArticleID)
+    WHERE ArticleID = OLD.ArticleID;
+END //
+
+DELIMITER ;
+
+-- 创建视频点赞数更新触发器（删除点赞时更新）
+DELIMITER //
+
+CREATE TRIGGER UpdateVideoLikeCountAfterDelete
+AFTER DELETE ON VideoLikes
+FOR EACH ROW
+BEGIN
+    UPDATE Videos
+    SET LikeCount = (SELECT COUNT(*) FROM VideoLikes WHERE VideoID = OLD.VideoID)
+    WHERE VideoID = OLD.VideoID;
+END //
+
+DELIMITER ;
