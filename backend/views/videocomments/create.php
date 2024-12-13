@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\models\Videocomments $model */
+/** @var app\models\VideoComments $model */
 
-$this->title = 'Create Videocomments';
-$this->params['breadcrumbs'][] = ['label' => 'Videocomments', 'url' => ['index']];
+$this->title = 'Create Video Comments';
+$this->params['breadcrumbs'][] = ['label' => 'Video Comments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="videocomments-create">
+<div class="video-comments-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

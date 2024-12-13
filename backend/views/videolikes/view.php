@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\Videolikes $model */
+/** @var app\models\VideoLikes $model */
 
 $this->title = $model->LikeID;
-$this->params['breadcrumbs'][] = ['label' => 'Videolikes', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Video Likes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="videolikes-view">
+<div class="video-likes-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,8 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'LikeID',
+            'UserID',
             'VideoID',
-            'Likes',
+            'LikedAt',
         ],
     ]) ?>
 

@@ -31,10 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'VideoID',
             'Title',
-            'Description:ntext',
+            'URL:url',
+            'UserID',
+            'UploadedAt',
+            'UpdatedAt',
+            'ViewCount',
+            'LikeCount',
             'PictureURL',
-            'UploadDate',
-            'VideoURL',
         ],
     ]) ?>
 

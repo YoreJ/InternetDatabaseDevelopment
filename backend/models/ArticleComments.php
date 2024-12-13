@@ -5,25 +5,25 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "articlecomments".
+ * This is the model class for table "ArticleComments".
  *
  * @property int $CommentID
+ * @property int $UserID
  * @property int $ArticleID
- * @property string $Comment
- * @property string|null $CommentDate
- * @property string $Username
+ * @property string $Content
+ * @property string|null $CommentedAt
  *
  * @property Articles $article
- * @property Users $username
+ * @property Users $user
  */
-class Articlecomments extends \yii\db\ActiveRecord
+class ArticleComments extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'articlecomments';
+        return 'ArticleComments';
     }
 
     /**
@@ -32,13 +32,12 @@ class Articlecomments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ArticleID', 'Comment', 'Username'], 'required'],
-            [['ArticleID'], 'integer'],
-            [['Comment'], 'string'],
-            [['CommentDate'], 'safe'],
-            [['Username'], 'string', 'max' => 50],
+            [['UserID', 'ArticleID', 'Content'], 'required'],
+            [['UserID', 'ArticleID'], 'integer'],
+            [['Content'], 'string'],
+            [['CommentedAt'], 'safe'],
+            [['UserID'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['UserID' => 'UserID']],
             [['ArticleID'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::class, 'targetAttribute' => ['ArticleID' => 'ArticleID']],
-            [['Username'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['Username' => 'Username']],
         ];
     }
 
@@ -49,10 +48,10 @@ class Articlecomments extends \yii\db\ActiveRecord
     {
         return [
             'CommentID' => 'Comment ID',
+            'UserID' => 'User ID',
             'ArticleID' => 'Article ID',
-            'Comment' => 'Comment',
-            'CommentDate' => 'Comment Date',
-            'Username' => 'Username',
+            'Content' => 'Content',
+            'CommentedAt' => 'Commented At',
         ];
     }
 
@@ -67,12 +66,12 @@ class Articlecomments extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Username]].
+     * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUsername()
+    public function getUser()
     {
-        return $this->hasOne(Users::class, ['Username' => 'Username']);
+        return $this->hasOne(Users::class, ['UserID' => 'UserID']);
     }
 }

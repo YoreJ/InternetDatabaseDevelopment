@@ -14,13 +14,19 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'Description')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'URL')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'UserID')->textInput() ?>
+
+    <?= $form->field($model, 'UploadedAt')->textInput() ?>
+
+    <?= $form->field($model, 'UpdatedAt')->textInput() ?>
+
+    <?= $form->field($model, 'ViewCount')->textInput() ?>
+
+    <?= $form->field($model, 'LikeCount')->textInput() ?>
 
     <?= $form->field($model, 'PictureURL')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'UploadDate')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'VideoURL')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

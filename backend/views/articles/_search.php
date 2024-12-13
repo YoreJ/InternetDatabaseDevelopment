@@ -21,7 +21,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Content') ?>
 
-    <?= $form->field($model, 'PublicationDate') ?>
+    <?= $form->field($model, 'AuthorID') ?>
+
+    <?= $form->field($model, 'PublishedAt') ?>
+
+    <?php // echo $form->field($model, 'UpdatedAt') ?>
+
+    <?php // echo $form->field($model, 'ViewCount') ?>
+
+    <?php // echo $form->field($model, 'LikeCount') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

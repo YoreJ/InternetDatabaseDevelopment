@@ -4,21 +4,21 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\Articlecomments $model */
+/** @var app\models\ArticleComments $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="articlecomments-form">
+<div class="article-comments-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->field($model, 'UserID')->textInput() ?>
+
     <?= $form->field($model, 'ArticleID')->textInput() ?>
 
-    <?= $form->field($model, 'Comment')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'Content')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'CommentDate')->textInput() ?>
-
-    <?= $form->field($model, 'Username')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'CommentedAt')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

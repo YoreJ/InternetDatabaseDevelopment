@@ -5,18 +5,21 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "videos".
+ * This is the model class for table "Videos".
  *
  * @property int $VideoID
  * @property string $Title
- * @property string|null $Description
- * @property string $PictureURL
- * @property string $UploadDate
- * @property string $VideoURL
+ * @property string $URL
+ * @property int $UserID
+ * @property string|null $UploadedAt
+ * @property string|null $UpdatedAt
+ * @property int|null $ViewCount
+ * @property int|null $LikeCount
+ * @property string|null $PictureURL
  *
- * @property Comments[] $comments
- * @property Videocomments[] $videocomments
- * @property Videolikes[] $videolikes
+ * @property Users $user
+ * @property VideoComments[] $videoComments
+ * @property VideoLikes[] $videoLikes
  */
 class Videos extends \yii\db\ActiveRecord
 {
@@ -25,7 +28,7 @@ class Videos extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'videos';
+        return 'Videos';
     }
 
     /**
@@ -34,10 +37,11 @@ class Videos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Title', 'PictureURL', 'UploadDate', 'VideoURL'], 'required'],
-            [['Description'], 'string'],
-            [['Title'], 'string', 'max' => 100],
-            [['PictureURL', 'UploadDate', 'VideoURL'], 'string', 'max' => 255],
+            [['Title', 'URL', 'UserID'], 'required'],
+            [['UserID', 'ViewCount', 'LikeCount'], 'integer'],
+            [['UploadedAt', 'UpdatedAt'], 'safe'],
+            [['Title', 'URL', 'PictureURL'], 'string', 'max' => 255],
+            [['UserID'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['UserID' => 'UserID']],
         ];
     }
 
@@ -49,40 +53,43 @@ class Videos extends \yii\db\ActiveRecord
         return [
             'VideoID' => 'Video ID',
             'Title' => 'Title',
-            'Description' => 'Description',
+            'URL' => 'Url',
+            'UserID' => 'User ID',
+            'UploadedAt' => 'Uploaded At',
+            'UpdatedAt' => 'Updated At',
+            'ViewCount' => 'View Count',
+            'LikeCount' => 'Like Count',
             'PictureURL' => 'Picture Url',
-            'UploadDate' => 'Upload Date',
-            'VideoURL' => 'Video Url',
         ];
     }
 
     /**
-     * Gets query for [[Comments]].
+     * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getComments()
+    public function getUser()
     {
-        return $this->hasMany(Comments::class, ['VideoID' => 'VideoID']);
+        return $this->hasOne(Users::class, ['UserID' => 'UserID']);
     }
 
     /**
-     * Gets query for [[Videocomments]].
+     * Gets query for [[VideoComments]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVideocomments()
+    public function getVideoComments()
     {
-        return $this->hasMany(Videocomments::class, ['VideoID' => 'VideoID']);
+        return $this->hasMany(VideoComments::class, ['VideoID' => 'VideoID']);
     }
 
     /**
-     * Gets query for [[Videolikes]].
+     * Gets query for [[VideoLikes]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVideolikes()
+    public function getVideoLikes()
     {
-        return $this->hasMany(Videolikes::class, ['VideoID' => 'VideoID']);
+        return $this->hasMany(VideoLikes::class, ['VideoID' => 'VideoID']);
     }
 }

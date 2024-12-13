@@ -31,10 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'VideoID',
             'Title',
-            'Description:ntext',
+            'URL:url',
+            'UserID',
+            'UploadedAt',
+            'UpdatedAt',
+            'ViewCount',
+            'LikeCount',
             'PictureURL',
-            'UploadDate',
-            //'VideoURL',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Videos $model, $key, $index, $column) {

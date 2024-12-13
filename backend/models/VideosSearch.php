@@ -17,8 +17,8 @@ class VideosSearch extends Videos
     public function rules()
     {
         return [
-            [['VideoID'], 'integer'],
-            [['Title', 'Description', 'PictureURL', 'UploadDate', 'VideoURL'], 'safe'],
+            [['VideoID', 'UserID', 'ViewCount', 'LikeCount'], 'integer'],
+            [['Title', 'URL', 'UploadedAt', 'UpdatedAt', 'PictureURL'], 'safe'],
         ];
     }
 
@@ -59,13 +59,16 @@ class VideosSearch extends Videos
         // grid filtering conditions
         $query->andFilterWhere([
             'VideoID' => $this->VideoID,
+            'UserID' => $this->UserID,
+            'UploadedAt' => $this->UploadedAt,
+            'UpdatedAt' => $this->UpdatedAt,
+            'ViewCount' => $this->ViewCount,
+            'LikeCount' => $this->LikeCount,
         ]);
 
         $query->andFilterWhere(['like', 'Title', $this->Title])
-            ->andFilterWhere(['like', 'Description', $this->Description])
-            ->andFilterWhere(['like', 'PictureURL', $this->PictureURL])
-            ->andFilterWhere(['like', 'UploadDate', $this->UploadDate])
-            ->andFilterWhere(['like', 'VideoURL', $this->VideoURL]);
+            ->andFilterWhere(['like', 'URL', $this->URL])
+            ->andFilterWhere(['like', 'PictureURL', $this->PictureURL]);
 
         return $dataProvider;
     }

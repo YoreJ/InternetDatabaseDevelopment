@@ -32,7 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'ArticleID',
             'Title',
             'Content:ntext',
-            'PublicationDate',
+            'AuthorID',
+            'PublishedAt',
+            //'UpdatedAt',
+            //'ViewCount',
+            //'LikeCount',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Articles $model, $key, $index, $column) {

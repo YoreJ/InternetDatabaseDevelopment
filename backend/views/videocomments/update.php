@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\models\Videocomments $model */
+/** @var app\models\VideoComments $model */
 
-$this->title = 'Update Videocomments: ' . $model->CommentID;
-$this->params['breadcrumbs'][] = ['label' => 'Videocomments', 'url' => ['index']];
+$this->title = 'Update Video Comments: ' . $model->CommentID;
+$this->params['breadcrumbs'][] = ['label' => 'Video Comments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->CommentID, 'url' => ['view', 'CommentID' => $model->CommentID]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="videocomments-update">
+<div class="video-comments-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

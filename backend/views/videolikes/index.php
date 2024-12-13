@@ -1,24 +1,24 @@
 <?php
 
-use app\models\Videolikes;
+use app\models\VideoLikes;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\VideolikesSearch $searchModel */
+/** @var app\models\VideoLikesSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Videolikes';
+$this->title = 'Video Likes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="videolikes-index">
+<div class="video-likes-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Videolikes', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Video Likes', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -30,11 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'LikeID',
+            'UserID',
             'VideoID',
-            'Likes',
+            'LikedAt',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Videolikes $model, $key, $index, $column) {
+                'urlCreator' => function ($action, VideoLikes $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'LikeID' => $model->LikeID]);
                  }
             ],

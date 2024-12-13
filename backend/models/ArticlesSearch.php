@@ -17,8 +17,8 @@ class ArticlesSearch extends Articles
     public function rules()
     {
         return [
-            [['ArticleID'], 'integer'],
-            [['Title', 'Content', 'PublicationDate'], 'safe'],
+            [['ArticleID', 'AuthorID', 'ViewCount', 'LikeCount'], 'integer'],
+            [['Title', 'Content', 'PublishedAt', 'UpdatedAt'], 'safe'],
         ];
     }
 
@@ -59,7 +59,11 @@ class ArticlesSearch extends Articles
         // grid filtering conditions
         $query->andFilterWhere([
             'ArticleID' => $this->ArticleID,
-            'PublicationDate' => $this->PublicationDate,
+            'AuthorID' => $this->AuthorID,
+            'PublishedAt' => $this->PublishedAt,
+            'UpdatedAt' => $this->UpdatedAt,
+            'ViewCount' => $this->ViewCount,
+            'LikeCount' => $this->LikeCount,
         ]);
 
         $query->andFilterWhere(['like', 'Title', $this->Title])

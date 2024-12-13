@@ -19,13 +19,19 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Title') ?>
 
-    <?= $form->field($model, 'Description') ?>
+    <?= $form->field($model, 'URL') ?>
 
-    <?= $form->field($model, 'PictureURL') ?>
+    <?= $form->field($model, 'UserID') ?>
 
-    <?= $form->field($model, 'UploadDate') ?>
+    <?= $form->field($model, 'UploadedAt') ?>
 
-    <?php // echo $form->field($model, 'VideoURL') ?>
+    <?php // echo $form->field($model, 'UpdatedAt') ?>
+
+    <?php // echo $form->field($model, 'ViewCount') ?>
+
+    <?php // echo $form->field($model, 'LikeCount') ?>
+
+    <?php // echo $form->field($model, 'PictureURL') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

@@ -5,16 +5,21 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "users".
+ * This is the model class for table "Users".
  *
  * @property int $UserID
  * @property string $Username
  * @property string $Password
+ * @property string|null $Role
+ * @property string|null $CreatedAt
  *
- * @property Admins[] $admins
- * @property Articlecomments[] $articlecomments
- * @property Comments[] $comments
- * @property Videocomments[] $videocomments
+ * @property ArticleComments[] $articleComments
+ * @property ArticleLikes[] $articleLikes
+ * @property Articles[] $articles
+ * @property Conversations[] $conversations
+ * @property VideoComments[] $videoComments
+ * @property VideoLikes[] $videoLikes
+ * @property Videos[] $videos
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -23,7 +28,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'users';
+        return 'Users';
     }
 
     /**
@@ -33,9 +38,9 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             [['Username', 'Password'], 'required'],
-            [['Username'], 'string', 'max' => 50],
-            [['Password'], 'string', 'max' => 100],
-            [['Username'], 'unique'],
+            [['Role'], 'string'],
+            [['CreatedAt'], 'safe'],
+            [['Username', 'Password'], 'string', 'max' => 255],
         ];
     }
 
@@ -48,46 +53,78 @@ class Users extends \yii\db\ActiveRecord
             'UserID' => 'User ID',
             'Username' => 'Username',
             'Password' => 'Password',
+            'Role' => 'Role',
+            'CreatedAt' => 'Created At',
         ];
     }
 
     /**
-     * Gets query for [[Admins]].
+     * Gets query for [[ArticleComments]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAdmins()
+    public function getArticleComments()
     {
-        return $this->hasMany(Admins::class, ['Username' => 'Username']);
+        return $this->hasMany(ArticleComments::class, ['UserID' => 'UserID']);
     }
 
     /**
-     * Gets query for [[Articlecomments]].
+     * Gets query for [[ArticleLikes]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getArticlecomments()
+    public function getArticleLikes()
     {
-        return $this->hasMany(Articlecomments::class, ['Username' => 'Username']);
+        return $this->hasMany(ArticleLikes::class, ['UserID' => 'UserID']);
     }
 
     /**
-     * Gets query for [[Comments]].
+     * Gets query for [[Articles]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getComments()
+    public function getArticles()
     {
-        return $this->hasMany(Comments::class, ['Username' => 'Username']);
+        return $this->hasMany(Articles::class, ['AuthorID' => 'UserID']);
     }
 
     /**
-     * Gets query for [[Videocomments]].
+     * Gets query for [[Conversations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVideocomments()
+    public function getConversations()
     {
-        return $this->hasMany(Videocomments::class, ['Username' => 'Username']);
+        return $this->hasMany(Conversations::class, ['UserID' => 'UserID']);
+    }
+
+    /**
+     * Gets query for [[VideoComments]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVideoComments()
+    {
+        return $this->hasMany(VideoComments::class, ['UserID' => 'UserID']);
+    }
+
+    /**
+     * Gets query for [[VideoLikes]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVideoLikes()
+    {
+        return $this->hasMany(VideoLikes::class, ['UserID' => 'UserID']);
+    }
+
+    /**
+     * Gets query for [[Videos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVideos()
+    {
+        return $this->hasMany(Videos::class, ['UserID' => 'UserID']);
     }
 }

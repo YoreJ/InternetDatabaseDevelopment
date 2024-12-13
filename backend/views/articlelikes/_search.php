@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\ArticlelikesSearch $model */
+/** @var app\models\ArticleLikesSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="articlelikes-search">
+<div class="article-likes-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,9 +17,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'LikeID') ?>
 
+    <?= $form->field($model, 'UserID') ?>
+
     <?= $form->field($model, 'ArticleID') ?>
 
-    <?= $form->field($model, 'Likes') ?>
+    <?= $form->field($model, 'LikedAt') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

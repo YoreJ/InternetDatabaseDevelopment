@@ -5,15 +5,20 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "articles".
+ * This is the model class for table "Articles".
  *
  * @property int $ArticleID
  * @property string $Title
- * @property string|null $Content
- * @property string|null $PublicationDate
+ * @property string $Content
+ * @property int $AuthorID
+ * @property string|null $PublishedAt
+ * @property string|null $UpdatedAt
+ * @property int|null $ViewCount
+ * @property int|null $LikeCount
  *
- * @property Articlecomments[] $articlecomments
- * @property Articlelikes[] $articlelikes
+ * @property ArticleComments[] $articleComments
+ * @property ArticleLikes[] $articleLikes
+ * @property Users $author
  */
 class Articles extends \yii\db\ActiveRecord
 {
@@ -22,7 +27,7 @@ class Articles extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'articles';
+        return 'Articles';
     }
 
     /**
@@ -31,10 +36,12 @@ class Articles extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Title'], 'required'],
+            [['Title', 'Content', 'AuthorID'], 'required'],
             [['Content'], 'string'],
-            [['PublicationDate'], 'safe'],
+            [['AuthorID', 'ViewCount', 'LikeCount'], 'integer'],
+            [['PublishedAt', 'UpdatedAt'], 'safe'],
             [['Title'], 'string', 'max' => 255],
+            [['AuthorID'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['AuthorID' => 'UserID']],
         ];
     }
 
@@ -47,27 +54,41 @@ class Articles extends \yii\db\ActiveRecord
             'ArticleID' => 'Article ID',
             'Title' => 'Title',
             'Content' => 'Content',
-            'PublicationDate' => 'Publication Date',
+            'AuthorID' => 'Author ID',
+            'PublishedAt' => 'Published At',
+            'UpdatedAt' => 'Updated At',
+            'ViewCount' => 'View Count',
+            'LikeCount' => 'Like Count',
         ];
     }
 
     /**
-     * Gets query for [[Articlecomments]].
+     * Gets query for [[ArticleComments]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getArticlecomments()
+    public function getArticleComments()
     {
-        return $this->hasMany(Articlecomments::class, ['ArticleID' => 'ArticleID']);
+        return $this->hasMany(ArticleComments::class, ['ArticleID' => 'ArticleID']);
     }
 
     /**
-     * Gets query for [[Articlelikes]].
+     * Gets query for [[ArticleLikes]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getArticlelikes()
+    public function getArticleLikes()
     {
-        return $this->hasMany(Articlelikes::class, ['ArticleID' => 'ArticleID']);
+        return $this->hasMany(ArticleLikes::class, ['ArticleID' => 'ArticleID']);
+    }
+
+    /**
+     * Gets query for [[Author]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuthor()
+    {
+        return $this->hasOne(Users::class, ['UserID' => 'AuthorID']);
     }
 }

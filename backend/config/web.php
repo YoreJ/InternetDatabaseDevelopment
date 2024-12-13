@@ -1,9 +1,4 @@
 <?php
-/**
- * Team: LFZW,NKU
- * Coding by LiangXiaochu 2110951
- * 修改了路由路径，提供了api接口给前端,允许跨域传输
- */
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
@@ -18,7 +13,8 @@ $config = [
     ],
     'components' => [
         'request' => [
-            'cookieValidationKey' => 'JNYqG-lRFV3nWlJn-h56ovmOGnitNP5C',
+            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'cookieValidationKey' => 'u9l3RMHhW59fyXjdztPqEr22gAlH_gPA',
             'enableCsrfValidation' => false 
         ],
         'cache' => [
@@ -51,27 +47,34 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'api/login' => 'api/login',
-                'api/signup' => 'api/signup',
-                'api/adminlogin' => 'api/adminlogin',
-                'api/getarticle' => 'api/getarticle',
-                'api/getvideo' => 'api/getvideo',
-                'api/getvideocomment' => 'api/getvideocomment',
-                'api/getarticlecomment' => 'api/getarticlecomment',
-                'api/getclick' => 'api/getclick',
-                'api/addvideocomment' => 'api/addvideocomment',
-                'api/addarticlecomment' => 'api/addarticlecomment',
-                'api/addclick' => 'api/addclick',
-                'api/getpersonalinfo' => 'api/getpersonalinfo',
-                'api/addwebviews' => 'api/addwebviews',
-                'api/getvideopagecount' => 'api/getvideopagecount',
-                'api/getarticlepagecount' => 'api/getarticlepagecount',
-                'api/checkwebviews' => 'api/checkwebviews',
-                'api/getvideolikes' => 'api/getvideolikes',
-                'api/getarticlelikes' => 'api/getarticlelikes',
-                'api/addvideolikes' => 'api/addvideolikes',
-                'api/addarticlelikes' => 'api/addarticlelikes',
-                'api/chat' => 'api/chatbot',
+                'api/addwebviews' => 'api/addwebviews', // finish
+                'api/getwebviews' => 'api/getwebviews', // finish
+                'api/login' => 'api/login', // finish
+                'api/signup' => 'api/signup', // finish
+
+                'api/getuser' => 'api/getuser', // finish
+                'api/chat' => 'api/chatbot', // finish
+
+                'api/getarticle' => 'api/getarticle', // finish
+                'api/addarticle' => 'api/addarticle', // finish
+                'api/deletearticle' => 'api/deletearticle', // finish
+                'api/viewarticle' => 'api/viewarticle', // finish
+                'api/likearticle' => 'api/likearticle', // finish
+                'api/getlikearticle' => 'api/getlikearticle', // finish
+                'api/commentarticle' => 'api/commentarticle', // finish
+                'api/showcommentarticle' => 'api/showcommentarticle', //finish
+                'api/deletecommentarticle' => 'api/deletecommentarticle', //finish
+                
+                'api/getvideo' => 'api/getvideo', // finish
+                'api/addvideo' => 'api/addvideo', // finish
+                'api/deletevideo' => 'api/deletevideo', // finish
+                'api/viewvideo' => 'api/viewvideo', // finish
+                'api/likevideo' => 'api/likevideo', // finish
+                'api/getlikevideo' => 'api/getlikevideo', // finish
+                'api/commentvideo' => 'api/commentvideo', // finish
+                'api/showcommentvideo' => 'api/showcommentvideo', //finish
+                'api/deletecommentvideo' => 'api/deletecommentvideo', //finish      
+                
             ],
         ],
         'response' => [
@@ -85,13 +88,24 @@ $config = [
                 //$event->sender->headers->remove('Access-Control-Allow-Origin');//这个是删除跨域规则
             },
         ],
+        'as corsFilter' => [
+            'class' => \yii\filters\Cors::class,
+            'cors' => [
+                'Origin' => ['http://localhost:6262'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+                'Access-Control-Request-Headers' => ['*'],
+                'Access-Control-Allow-Credentials' => true,
+                'Access-Control-Max-Age' => 3600,
+                'Access-Control-Expose-Headers' => [],
+            ],
+        ],
     ],
     'params' => $params,
 ];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    // $config['bootstrap'][] = 'debug';
+    $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.

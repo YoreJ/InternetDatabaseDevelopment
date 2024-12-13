@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\models\Articlelikes $model */
+/** @var app\models\ArticleLikes $model */
 
-$this->title = 'Create Articlelikes';
-$this->params['breadcrumbs'][] = ['label' => 'Articlelikes', 'url' => ['index']];
+$this->title = 'Create Article Likes';
+$this->params['breadcrumbs'][] = ['label' => 'Article Likes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="articlelikes-create">
+<div class="article-likes-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

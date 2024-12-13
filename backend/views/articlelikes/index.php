@@ -1,24 +1,24 @@
 <?php
 
-use app\models\Articlelikes;
+use app\models\ArticleLikes;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\ArticlelikesSearch $searchModel */
+/** @var app\models\ArticleLikesSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Articlelikes';
+$this->title = 'Article Likes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="articlelikes-index">
+<div class="article-likes-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Articlelikes', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Article Likes', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -30,11 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'LikeID',
+            'UserID',
             'ArticleID',
-            'Likes',
+            'LikedAt',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Articlelikes $model, $key, $index, $column) {
+                'urlCreator' => function ($action, ArticleLikes $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'LikeID' => $model->LikeID]);
                  }
             ],

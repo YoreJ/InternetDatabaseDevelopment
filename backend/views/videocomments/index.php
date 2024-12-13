@@ -1,24 +1,24 @@
 <?php
 
-use app\models\Videocomments;
+use app\models\VideoComments;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\VideocommentsSearch $searchModel */
+/** @var app\models\VideoCommentsSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Videocomments';
+$this->title = 'Video Comments';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="videocomments-index">
+<div class="video-comments-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Videocomments', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Video Comments', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -30,13 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'CommentID',
+            'UserID',
             'VideoID',
-            'Comment:ntext',
-            'CommentDate',
-            'Username',
+            'Content:ntext',
+            'CommentedAt',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Videocomments $model, $key, $index, $column) {
+                'urlCreator' => function ($action, VideoComments $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'CommentID' => $model->CommentID]);
                  }
             ],
