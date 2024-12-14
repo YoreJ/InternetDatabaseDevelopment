@@ -35,20 +35,20 @@ export default {
       // 获取用户名和密码
       const username = this.registerData.username
       const password = this.registerData.password
-    
+
       if (this.registerData.password !== this.registerData.confirmPassword) {
         this.$message.error('密码和确认密码不一致')
         return
       }
-    
+
       // 密码要求的正则表达式
       const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-    
+
       if (!passwordPattern.test(password)) {
         this.$message.error('密码至少为8位数，并且要包含大小写字母数字数')
         return
       }
-    
+
       // 向后端发送注册请求
       axios
         .post('http://localhost:8080/api/signup', {
@@ -77,7 +77,7 @@ export default {
       // 获取用户名和密码
       const username = this.loginData.username
       const password = this.loginData.password
-    
+
       // 向后端发送登录请求
       axios
         .post('http://localhost:8080/api/login', {
@@ -91,7 +91,7 @@ export default {
             sessionStorage.setItem('Username', username)
             sessionStorage.setItem('Password', password)
             this.$message.success('登录成功')
-    
+
             // 导航到 /home 路径
             setTimeout(() => {
               window.location.href = '/'
