@@ -11,7 +11,9 @@
       </div>
       <div class="vtime">{{ articleTime }}</div>
     </div>
-    <LikeBtn :id="id" :type="a" @click="getLikeNum()"></LikeBtn>
+
+    <LikeBtn :like="like" :userid="userID" :id="id" :type="a" @click="getLikeNum()"></LikeBtn>
+
     <div class="CommentContainer">
       <div class="CommentForm">
         <textarea v-model="message" placeholder="留言内容"></textarea>
@@ -23,9 +25,9 @@
             <div class="info">
               <strong>{{ msg.Username }}</strong>
             </div>
-            <span>发布于: {{ msg.CommentDate }}</span>
+            <span>发布于: {{ msg.CommentedAt }}</span>
           </div>
-          <div class="content">{{ msg.Comment }}</div>
+          <div class="content">{{ msg.Content }}</div>
         </div>
       </div>
     </div>
@@ -38,12 +40,14 @@ import LikeBtn from '../components/LikeBtn.vue'
 export default {
   data() {
     return {
+      userID: '',
       title: '',
       content: '',
       articleTime: '',
       likeNum: '',
       messages: [],
       id: '',
+      like: false,
       a: 'a'
     }
   },
@@ -51,6 +55,7 @@ export default {
     LikeBtn
   },
   mounted() {
+    this.userID = sessionStorage.getItem('UserID')
     this.getUrl()
     this.getComments()
     this.addClick()
@@ -61,7 +66,7 @@ export default {
     getUrl() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/getarticle?id=' + id)
+        .get('http://localhost:8080/api/getarticle?id=' + id)
         .then((response) => {
           this.title = response.data.Title
           this.content = response.data.Content
@@ -75,9 +80,22 @@ export default {
     getLikeNum() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/getarticlelikes?articleID=' + id)
+        .get('http://localhost:8080/api/likenumarticle?articleId=' + id)
         .then((response) => {
-          this.likeNum = response.data
+          this.likeNum = response.data.likeCount
+          console.log(this.likeNum)
+        })
+        .catch((error) => {
+          console.error('请求数据失败', error)
+        })
+    },
+    likeOr() {
+      const id = this.$route.params.id
+      const userid = sessionStorage.getItem('UserID')
+      axios
+        .get('http://localhost:8080/api/getlikearticle?userId=' + userid + '&articleId=' + id)
+        .then((response) => {
+          this.like = response.data.liked
         })
         .catch((error) => {
           console.error('请求数据失败', error)
@@ -86,9 +104,9 @@ export default {
     getComments() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/getarticlecomment?vid=' + id)
+        .post('http://localhost:8080/api/showcommentarticle?articleId=' + id)
         .then((response) => {
-          this.messages = response.data
+          this.messages = response.data.comments
         })
         .catch((error) => {
           console.error('请求数据失败', error)
@@ -97,25 +115,27 @@ export default {
     addClick() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/addclick?contentID=' + id + '&contenttype=Article')
+        .get('http://localhost:8080/api/viewarticle?id=' + id)
         .catch((error) => {
           console.error('请求失败', error)
         })
     },
     submitMessage() {
-      const username = sessionStorage.getItem('Username')
+      const userid = sessionStorage.getItem('UserID')
       const id = this.$route.params.id
       if (this.message) {
-        const url = `http://localhost:8080/api/addarticlecomment?username=${username}&comment=${encodeURIComponent(
+        const url = `http://localhost:8080/api/commentarticle?userId=${userid}&articleId=${id}&content=${encodeURIComponent(
           this.message
-        )}&articleID=${id}`
+        )}`
         axios
           .post(url)
           .then((response) => {
             const status = response.data.status
-            if (status === -1) {
+            if (status === 0) {
               this.$message.error('添加评论失败')
-            } else {
+              console.log(response.data)
+            } 
+            else {
               this.message = ''
               this.getComments()
             }

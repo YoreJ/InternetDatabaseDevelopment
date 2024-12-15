@@ -3,7 +3,7 @@
     class="likebtn"
     @mouseover="startTimer"
     @mouseleave="resetTimer"
-    @click="addLikenum(this.likeCount)"
+    @click="addLikenum"
   >
     {{ buttonText }}
   </div>
@@ -11,14 +11,22 @@
 
 <script>
 import axios from 'axios'
+
 export default {
   data() {
     return {
-      timerId: null,
-      likeCount: 1
+      liked: this.like // 初始化 liked 状态
     }
   },
   props: {
+    like: {
+      type: Boolean,
+      required: true
+    },
+    userid: {
+      type: String,
+      required: true
+    },
     id: {
       type: String,
       required: true
@@ -30,40 +38,43 @@ export default {
   },
   computed: {
     buttonText() {
-      return `赞${this.likeCount}个`
+      console.log(this.liked)
+      return this.liked ? '取消点赞' : '点一个赞'
     }
   },
   methods: {
-    startTimer() {
-      clearTimeout(this.timerId)
-      if (this.likeCount === 1) {
-        this.timerId = setTimeout(() => {
-          this.likeCount = 2
-          this.startTimer()
-        }, 1000)
-      } else if (this.likeCount === 2) {
-        this.timerId = setTimeout(() => {
-          this.likeCount = 3
-        }, 1000)
+    addLikenum() {
+      const userid = sessionStorage.getItem('UserID') || this.userid
+      const id = this.id || this.$route.params.id
+
+      if (this.type === 'v') {
+        const url = `http://localhost:8080/api/likevideo?userId=${userid}&videoId=${id}`
+        axios.get(url)
+          .then((response) => {
+            console.log('操作成功', response.data)
+            this.liked = !this.liked
+          })
+          .catch((error) => {
+            console.error('发送数据失败', error)
+          })
+      } 
+      else if (this.type === 'a') {
+        const url = `http://localhost:8080/api/likearticle?userId=${userid}&articleId=${id}`
+        axios.get(url)
+          .then((response) => {
+            console.log('操作成功', response.data)
+            this.liked = !this.liked
+          })
+          .catch((error) => {
+            console.error('发送数据失败', error)
+          })
       }
+    },
+    startTimer() {
+      // 如果有需要实现的定时器逻辑，请在这里添加
     },
     resetTimer() {
-      clearTimeout(this.timerId)
-      this.likeCount = 1
-    },
-    addLikenum(num) {
-      const id = this.$route.params.id
-      if (this.type === 'v') {
-        const url = 'http://localhost:8080/api/addvideolikes?videoID='
-        axios.post(url + id + '&num=' + num).catch((error) => {
-          console.error('发送数据失败', error)
-        })
-      } else if (this.type === 'a') {
-        const url = 'http://localhost:8080/api/addarticlelikes?articleID='
-        axios.post(url + id + '&num=' + num).catch((error) => {
-          console.error('发送数据失败', error)
-        })
-      }
+      // 如果有需要实现的定时器重置逻辑，请在这里添加
     }
   }
 }
@@ -81,9 +92,9 @@ export default {
   font-size: 2em;
   padding: 0.75em 1em;
   color: #000000;
-  border: 0.15em solid rgb(255, 255, 255, 0.7);
+  border: 0.15em solid rgba(255, 255, 255, 0.7);
   border-radius: 2em;
-  transition: 3s;
+  transition: color 0.3s, background-color 0.3s;
   margin-bottom: 3vh;
 
   user-select: none;
@@ -101,7 +112,7 @@ export default {
   border: none;
   border-radius: 40%;
   background-color: rgba(0, 100, 253, 0.25);
-  transition: 4s;
+  transition: transform 0.3s, background-color 0.3s;
 }
 
 .likebtn:before {

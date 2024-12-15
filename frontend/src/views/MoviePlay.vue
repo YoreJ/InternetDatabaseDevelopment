@@ -10,11 +10,7 @@
       <div class="vtime">{{ videoTime }}</div>
     </div>
 
-    <div class="videoInfo">
-      <p>{{ videoInfo }}</p>
-    </div>
-
-    <LikeBtn :id="id" :type="v" @click="getLikeNum()"></LikeBtn>
+    <LikeBtn :like="like" :userid="userID" :id="id" :type="v" @click="getLikeNum()"></LikeBtn>
 
     <div class="CommentContainer">
       <div class="CommentForm">
@@ -45,12 +41,13 @@ import LikeBtn from '../components/LikeBtn.vue'
 export default {
   data() {
     return {
+      userID: '',
       videoSrc: '',
       videoTime: '',
-      videoInfo: '',
       likeNum: '',
       messages: [],
       id: '',
+      like: false,
       v: 'v'
     }
   },
@@ -58,11 +55,13 @@ export default {
     LikeBtn
   },
   mounted() {
+    this.userID = sessionStorage.getItem('UserID')
     this.initPlayer()
     this.getUrl()
     this.getComments()
     this.addClick()
     this.getLikeNum()
+    this.likeOr()
     this.id = this.$route.params.id
   },
   methods: {
@@ -89,8 +88,6 @@ export default {
           this.videoSrc = response.data.URL
           console.log('Video URL:', this.videoSrc);
 
-
-          this.videoInfo = response.data.Description
           this.videoTime = response.data.UploadDate
           this.player.source = {
             type: 'video',
@@ -104,9 +101,21 @@ export default {
     getLikeNum() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/getvideolikes?videoID=' + id)
+        .get('http://localhost:8080/api/likenumvideo?videoId=' + id)
         .then((response) => {
-          this.likeNum = response.data
+          this.likeNum = response.data.likeCount
+        })
+        .catch((error) => {
+          console.error('请求数据失败', error)
+        })
+    },
+    likeOr() {
+      const userID = sessionStorage.getItem('UserID')
+      const id = this.$route.params.id
+      axios
+        .get('http://localhost:8080/api/getlikevideo?userId=' + userID + '&videoId=' + id)
+        .then((response) => {
+          this.like = response.data.liked
         })
         .catch((error) => {
           console.error('请求数据失败', error)
@@ -115,7 +124,7 @@ export default {
     getComments() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/showcommentvideo?videoId=' + id)
+        .get('http://localhost:8080/api/showcommentvideo?videoId=' + id)
         .then((response) => {
           this.messages = response.data.comments
         })
@@ -126,20 +135,20 @@ export default {
     addClick() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/addclick?contentID=' + id + '&contenttype=Video')
+        .get('http://localhost:8080/api/viewvideo?id=' + id)
         .catch((error) => {
           console.error('请求失败', error)
         })
     },
     submitMessage() {
-      const username = sessionStorage.getItem('Username')
+      const userID = sessionStorage.getItem('UserID')
       const id = this.$route.params.id
       if (this.message) {
-        const url = `http://localhost:8080/api/addvideocomment?username=${username}&comment=${encodeURIComponent(
+        const url = `http://localhost:8080/api/commentvideo?userId=${userID}&videoId=${id}&content=${encodeURIComponent(
           this.message
-        )}&videoID=${id}`
+        )}`
         axios
-          .post(url)
+          .get(url)
           .then((response) => {
             const status = response.data.status
             if (status === -1) {
@@ -187,19 +196,6 @@ export default {
   margin-bottom: 0;
   justify-content: space-between;
   flex-direction: row;
-}
-
-.videoInfo {
-  display: flex;
-  margin-top: 5vh;
-  margin-bottom: 5vh;
-  font-size: 3vh;
-  color: rgb(0, 0, 0);
-  background-color: rgba(255, 254, 254, 0.7);
-  border-radius: 15px;
-  padding: 20px;
-  justify-content: center;
-  width: 100%;
 }
 
 .CommentContainer {

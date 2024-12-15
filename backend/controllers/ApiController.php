@@ -323,17 +323,35 @@ class ApiController extends Controller
 
         // 获取页数
         $page = \Yii::$app->request->get('page');
-        // 获取文章 ID
+        // 获取文章 IDGetarticle
         $id = \Yii::$app->request->get('id');
 
         $searchModel = new ArticlesSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
         if ($id !== null) {
-            $articles = Articles::find()->select(['ArticleID', 'Title', 'Content', 'PublicationDate'])->where(['ArticleID' => $id])->one();
+            $articles = Articles::find()->where(['ArticleID' => $id])->one();
+            if($articles !== null) {
+                // $articles->ViewCount = $articles->ViewCount + 1;
+                $articles->save();
+
+                return [
+                    'ArticleID' => $articles->ArticleID,
+                    'Title' => $articles->Title,
+                    'Content' => $articles->Content,
+                    'PublicationDate' => $articles->PublishedAt,
+                    'ViewCount' => $articles->ViewCount,
+                ];
+            } 
+            else {
+                return [
+                    'status' => 0,
+                    'message' => 'Article not found.',
+                ];
+            }
         } 
         else {
-            $dataProvider->pagination->pageSize = 15;
+            $dataProvider->pagination->pageSize = 8;
             $dataProvider->pagination->page = $page - 1;
             $articles = $dataProvider->getModels();
         }
@@ -448,12 +466,27 @@ class ApiController extends Controller
         }
     }
 
+    public function actionGetarticlepagecount()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $searchModel = new ArticlesSearch();
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider->pagination->pageSize = 8;
+        $pageCount = $dataProvider->pagination->pageCount;
+
+        return [
+            'status' => 1,
+            'pageCount' => $pageCount,
+        ];
+    }
+
     public function actionLikearticle()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $userId = \Yii::$app->request->post('userId');
-        $articleId = \Yii::$app->request->post('articleId');
+        $userId = \Yii::$app->request->get('userId');
+        $articleId = \Yii::$app->request->get('articleId');
 
         if ($userId === null || $articleId === null) {
             return [
@@ -503,6 +536,29 @@ class ApiController extends Controller
         }
     }
 
+    public function actionLikenumarticle()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        // 获取文章 ID
+        $articleId = \Yii::$app->request->get('articleId');
+
+        if ($articleId === null) {
+            return [
+                'status' => 0,
+                'message' => 'Article ID is required.',
+            ];
+        }
+
+        // 获取文章的点赞数量
+        $likeCount = ArticleLikes::find()->where(['ArticleID' => $articleId])->count();
+
+        return [
+            'status' => 1,
+            'likeCount' => $likeCount,
+        ];
+    }
+
     public function actionGetlikearticle()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -537,14 +593,17 @@ class ApiController extends Controller
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $userId = \Yii::$app->request->post('userId');
-        $articleId = \Yii::$app->request->post('articleId');
-        $content = \Yii::$app->request->post('content');
+        $userId = \Yii::$app->request->get('userId');
+        $articleId = \Yii::$app->request->get('articleId');
+        $content = \Yii::$app->request->get('content');
 
         if ($userId === null || $articleId === null || $content === null) {
             return [
                 'status' => 0,
                 'message' => 'User ID, Article ID, and Content are required.',
+                'userId' => $userId,
+                'articleId' => $articleId,
+                'content' => $content,
             ];
         }
 
@@ -566,7 +625,8 @@ class ApiController extends Controller
                     'CommentedAt' => $comment->CommentedAt,
                 ],
             ];
-        } else {
+        } 
+        else {
             return [
                 'status' => 0,
                 'message' => 'Failed to add comment.',
@@ -660,7 +720,7 @@ class ApiController extends Controller
             $video = Videos::find()->where(['VideoID' => $id])->one();
             if ($video !== null) {
                 // 增加访问量
-                $video->ViewCount = $video->ViewCount + 1;
+                // $video->ViewCount = $video->ViewCount + 1;
                 $video->save();
 
                 $videoUrl = \Yii::$app->urlManager->createAbsoluteUrl(['src/videos/' . $video->URL]);
@@ -808,8 +868,8 @@ class ApiController extends Controller
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $userId = \Yii::$app->request->post('userId');
-        $videoId = \Yii::$app->request->post('videoId');
+        $userId = \Yii::$app->request->get('userId');
+        $videoId = \Yii::$app->request->get('videoId');
 
         if ($userId === null || $videoId === null) {
             return [
@@ -856,6 +916,29 @@ class ApiController extends Controller
         }
     }
 
+    public function actionLikenumvideo()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    
+        // 获取视频 ID
+        $videoId = \Yii::$app->request->get('videoId');
+    
+        if ($videoId === null) {
+            return [
+                'status' => 0,
+                'message' => 'Video ID is required.',
+            ];
+        }
+    
+        // 获取视频的点赞数量
+        $likeCount = VideoLikes::find()->where(['VideoID' => $videoId])->count();
+    
+        return [
+            'status' => 1,
+            'likeCount' => $likeCount,
+        ];
+    }
+
     public function actionGetlikevideo()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -878,7 +961,8 @@ class ApiController extends Controller
                 'status' => 1,
                 'liked' => true,
             ];
-        } else {
+        } 
+        else {
             return [
                 'status' => 1,
                 'liked' => false,
@@ -890,9 +974,9 @@ class ApiController extends Controller
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $userId = \Yii::$app->request->post('userId');
-        $videoId = \Yii::$app->request->post('videoId');
-        $content = \Yii::$app->request->post('content');
+        $userId = \Yii::$app->request->get('userId');
+        $videoId = \Yii::$app->request->get('videoId');
+        $content = \Yii::$app->request->get('content');
 
         if ($userId === null || $videoId === null || $content === null) {
             return [

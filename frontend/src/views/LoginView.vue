@@ -9,6 +9,7 @@ export default {
         confirmPassword: ''
       },
       loginData: {
+        userID: '',
         username: '',
         password: ''
       },
@@ -88,6 +89,11 @@ export default {
           const status = response.data.status
           if (status === 1) {
             // 登录成功
+            const userID = response.data.user.UserID;
+            console.log(userID)
+            console.log(username)
+            console.log(password)
+            sessionStorage.setItem('UserID', userID)
             sessionStorage.setItem('Username', username)
             sessionStorage.setItem('Password', password)
             this.$message.success('登录成功')

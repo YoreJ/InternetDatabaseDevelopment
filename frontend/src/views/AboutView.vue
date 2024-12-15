@@ -148,9 +148,10 @@ export default {
      */
     checkViews() {
       axios
-        .post('http://localhost:8080/api/checkwebviews') // 发送 POST 请求
+        .get('http://localhost:8080/api/getwebviews')
         .then((response) => {
-          this.views = response.data.Views // 更新访问量
+          this.views = response.data.visitCount // 更新访问量
+          console.log('访问量:', this.views)
         })
         .catch((error) => {
           console.error('请求失败', error) // 错误处理
