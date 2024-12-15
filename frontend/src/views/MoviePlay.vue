@@ -2,10 +2,9 @@
   <div class="videoContainer">
     <div class="videoPlayer">
       <video id="player" playsinline controls>
-        <source src="" type="video/mp4" />
+        <source :src="videoSrc" type="video/mp4">
       </video>
     </div>
-
     <div class="like">
       <div class="likeNum">{{ likeNum }}个点赞👍</div>
       <div class="vtime">{{ videoTime }}</div>
@@ -28,9 +27,9 @@
             <div class="info">
               <strong>{{ msg.Username }}</strong>
             </div>
-            <span>发布于: {{ msg.CommentDate }}</span>
+            <span>发布于: {{ msg.CommentedAt }}</span>
           </div>
-          <div class="content">{{ msg.Comment }}</div>
+          <div class="content">{{ msg.Content }}</div>
         </div>
       </div>
     </div>
@@ -85,9 +84,12 @@ export default {
     getUrl() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/getvideo?id=' + id)
+        .get('http://localhost:8080/api/getvideo?id=' + id)
         .then((response) => {
-          this.videoSrc = response.data.VideoURL
+          this.videoSrc = response.data.URL
+          console.log('Video URL:', this.videoSrc);
+
+
           this.videoInfo = response.data.Description
           this.videoTime = response.data.UploadDate
           this.player.source = {
@@ -113,9 +115,9 @@ export default {
     getComments() {
       const id = this.$route.params.id
       axios
-        .post('http://localhost:8080/api/getvideocomment?vid=' + id)
+        .post('http://localhost:8080/api/showcommentvideo?videoId=' + id)
         .then((response) => {
-          this.messages = response.data
+          this.messages = response.data.comments
         })
         .catch((error) => {
           console.error('请求数据失败', error)

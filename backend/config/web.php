@@ -47,33 +47,34 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'api/addwebviews' => 'api/addwebviews', // finish
-                'api/getwebviews' => 'api/getwebviews', // finish
-                'api/login' => 'api/login', // finish
-                'api/signup' => 'api/signup', // finish
+                'api/addwebviews' => 'api/addwebviews', // finish 添加网站访问量
+                'api/getwebviews' => 'api/getwebviews', // finish 获取网站访问量
+                'api/login' => 'api/login', // finish 登录
+                'api/signup' => 'api/signup', // finish 注册
 
-                'api/getuser' => 'api/getuser', // finish
-                'api/chat' => 'api/chatbot', // finish
+                'api/getuser' => 'api/getuser', // finish 获取用户信息
+                'api/chat' => 'api/chatbot', // finish 聊天机器人
 
-                'api/getarticle' => 'api/getarticle', // finish
-                'api/addarticle' => 'api/addarticle', // finish
-                'api/deletearticle' => 'api/deletearticle', // finish
-                'api/viewarticle' => 'api/viewarticle', // finish
-                'api/likearticle' => 'api/likearticle', // finish
-                'api/getlikearticle' => 'api/getlikearticle', // finish
-                'api/commentarticle' => 'api/commentarticle', // finish
-                'api/showcommentarticle' => 'api/showcommentarticle', //finish
-                'api/deletecommentarticle' => 'api/deletecommentarticle', //finish
+                'api/getarticle' => 'api/getarticle', // finish 获取文章
+                'api/addarticle' => 'api/addarticle', // finish 添加文章
+                'api/deletearticle' => 'api/deletearticle', // finish 删除文章
+                'api/viewarticle' => 'api/viewarticle', // finish 增加文章访问量
+                'api/likearticle' => 'api/likearticle', // finish 喜欢文章
+                'api/getlikearticle' => 'api/getlikearticle', // finish 获取是否喜欢文章
+                'api/commentarticle' => 'api/commentarticle', // finish 评论文章
+                'api/showcommentarticle' => 'api/showcommentarticle', //finish 显示文章评论
+                'api/deletecommentarticle' => 'api/deletecommentarticle', //finish 删除文章评论
                 
-                'api/getvideo' => 'api/getvideo', // finish
-                'api/addvideo' => 'api/addvideo', // finish
-                'api/deletevideo' => 'api/deletevideo', // finish
-                'api/viewvideo' => 'api/viewvideo', // finish
-                'api/likevideo' => 'api/likevideo', // finish
-                'api/getlikevideo' => 'api/getlikevideo', // finish
-                'api/commentvideo' => 'api/commentvideo', // finish
-                'api/showcommentvideo' => 'api/showcommentvideo', //finish
-                'api/deletecommentvideo' => 'api/deletecommentvideo', //finish      
+                'api/getvideo' => 'api/getvideo', // finish 获取视频
+                'api/addvideo' => 'api/addvideo', // finish 添加视频
+                'api/deletevideo' => 'api/deletevideo', // finish 删除视频
+                'api/viewvideo' => 'api/viewvideo', // finish 增加视频访问量 
+                'api/likevideo' => 'api/likevideo', // finish 喜欢视频 
+                'api/getlikevideo' => 'api/getlikevideo', // finish 获取是否喜欢视频
+                'api/commentvideo' => 'api/commentvideo', // finish 评论视频
+                'api/showcommentvideo' => 'api/showcommentvideo', //finish 显示视频评论
+                'api/deletecommentvideo' => 'api/deletecommentvideo', //finish 删除视频评论  
+                'api/getvideopagecount' => 'api/getvideopagecount', //finish 获取视频页数
                 
             ],
         ],

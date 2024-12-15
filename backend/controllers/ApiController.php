@@ -662,25 +662,29 @@ class ApiController extends Controller
                 // 增加访问量
                 $video->ViewCount = $video->ViewCount + 1;
                 $video->save();
+
+                $videoUrl = \Yii::$app->urlManager->createAbsoluteUrl(['src/videos/' . $video->URL]);
     
                 return [
                     'VideoID' => $video->VideoID,
                     'Title' => $video->Title,
-                    'URL' => $video->URL,
+                    'URL' => $videoUrl,
                     'UserID' => $video->UserID,
                     'UploadedAt' => $video->UploadedAt,
                     'UpdatedAt' => $video->UpdatedAt,
                     'ViewCount' => $video->ViewCount,
                     'LikeCount' => $video->LikeCount,
                 ];
-            } else {
+            } 
+            else {
                 return [
                     'status' => 0,
                     'message' => 'Video not found.',
                 ];
             }
-        } else {
-            $dataProvider->pagination->pageSize = 15;
+        } 
+        else {
+            $dataProvider->pagination->pageSize = 12;
             $dataProvider->pagination->page = $page - 1;
             $videos = $dataProvider->getModels();
     
@@ -991,6 +995,23 @@ class ApiController extends Controller
                 'message' => 'Failed to delete comment.',
             ];
         }
+    }
+
+    public function actionGetvideopagecount()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $count = Videos::find()->count();
+        $pagecount = intval($count / 12);
+
+        if($count % 12 != 0) {
+            $pagecount += 1;
+        }
+
+        return [
+            'status' => 1,
+            'pagecount' => $pagecount,
+        ];
     }
 
 }

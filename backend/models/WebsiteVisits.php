@@ -7,6 +7,7 @@ use Yii;
 /**
  * This is the model class for table "WebsiteVisits".
  *
+ * @property int $ID
  * @property int|null $VisitCount
  */
 class WebsiteVisits extends \yii\db\ActiveRecord
@@ -35,6 +36,7 @@ class WebsiteVisits extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'ID' => 'ID',
             'VisitCount' => 'Visit Count',
         ];
     }

@@ -49,7 +49,7 @@ class WebsiteVisitsController extends Controller
 
     /**
      * Displays a single WebsiteVisits model.
-     * @param int $ID
+     * @param int $ID ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -85,7 +85,7 @@ class WebsiteVisitsController extends Controller
     /**
      * Updates an existing WebsiteVisits model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $ID
+     * @param int $ID ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -105,7 +105,7 @@ class WebsiteVisitsController extends Controller
     /**
      * Deletes an existing WebsiteVisits model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $ID
+     * @param int $ID ID
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -119,7 +119,7 @@ class WebsiteVisitsController extends Controller
     /**
      * Finds the WebsiteVisits model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $ID
+     * @param int $ID ID
      * @return WebsiteVisits the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */

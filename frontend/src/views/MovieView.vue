@@ -49,7 +49,7 @@ export default {
       axios
         .post('http://localhost:8080/api/getvideopagecount') // 请求后端获取分页总数
         .then((response) => {
-          this.pagecount = response.data * 10 // 假设后端返回的是页数，将其转换为总条数
+          this.pagecount = response.data * 12 // 假设后端返回的是页数，将其转换为总条数
         })
         .catch((error) => {
           console.error('请求失败', error) // 请求失败时在控制台输出错误信息
