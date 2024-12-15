@@ -140,22 +140,25 @@ export default {
   padding: 0;
 }
 
+Untitled
+
 body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center;  /* 改回居中对齐 */
   background: linear-gradient(to top, rgba(0, 181, 255, 1) 0%, rgba(0, 231, 220, 1) 100%);
   background-size: cover;
 }
-
 .container {
   background-color: #222;
-  width: 350px;
-  height: 550px;
+  width: 600px;
+  height: 400px;
   border-radius: 15px;
   overflow: hidden;
-  position: relative;
+  position: absolute;
+  top: 20%;
+
 }
 
 .container::after {
@@ -166,7 +169,7 @@ body {
   bottom: 0;
   right: 0;
 
-  background: url('../assets/imgs/bcpic1.jpg') no-repeat;
+  background: url('https://res.cloudinary.com/dci1eujqw/image/upload/v1616769558/Codepen/waldemar-brandt-aThdSdgx0YM-unsplash_cnq4sb.jpg') no-repeat;
   background-size: cover;
 
   background-position: left bottom;

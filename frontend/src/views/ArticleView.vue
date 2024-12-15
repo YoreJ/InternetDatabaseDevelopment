@@ -94,6 +94,9 @@ export default {
   width: 90%;
   height: auto;
   padding: 30px;
+
+  background: url('../assets/imgs/back2.png') no-repeat center center;
+  background-size: cover; /* 背景图片覆盖整个容器 */
 }
 
 .articleItem {
