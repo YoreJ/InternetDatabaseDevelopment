@@ -78,6 +78,8 @@ $config = [
                 'api/showcommentvideo' => 'api/showcommentvideo', //finish 显示视频评论
                 'api/deletecommentvideo' => 'api/deletecommentvideo', //finish 删除视频评论  
                 'api/getvideopagecount' => 'api/getvideopagecount', //finish 获取视频页数
+
+                'api/getstudent' => 'api/getstudent', // finish 获取学生
                 
             ],
         ],

@@ -202,6 +202,34 @@ LOCK TABLES `Messages` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Students`
+--
+
+DROP TABLE IF EXISTS `Students`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Students` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `student_id` varchar(20) DEFAULT NULL,
+  `role` varchar(100) DEFAULT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `student_id` (`student_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Students`
+--
+
+LOCK TABLES `Students` WRITE;
+/*!40000 ALTER TABLE `Students` DISABLE KEYS */;
+INSERT INTO `Students` VALUES (1,'姜宇','2210705','沙比','2210705姜宇个人作业.zip');
+/*!40000 ALTER TABLE `Students` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Users`
 --
 
@@ -379,7 +407,7 @@ CREATE TABLE `WebsiteVisits` (
 
 LOCK TABLES `WebsiteVisits` WRITE;
 /*!40000 ALTER TABLE `WebsiteVisits` DISABLE KEYS */;
-INSERT INTO `WebsiteVisits` VALUES (1,27);
+INSERT INTO `WebsiteVisits` VALUES (1,60);
 /*!40000 ALTER TABLE `WebsiteVisits` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -392,4 +420,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-16  1:34:50
+-- Dump completed on 2024-12-20  1:17:37

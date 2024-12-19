@@ -19,5 +19,6 @@ $this->title = 'My Yii Application';
         <a href="<?= \Yii::$app->urlManager->createUrl(['video-likes/index']) ?>" class="btn btn-primary">videolikes</a>
         <a href="<?= \Yii::$app->urlManager->createUrl(['videos/index']) ?>" class="btn btn-primary">videos</a>
         <a href="<?= \Yii::$app->urlManager->createUrl(['website-visits/index']) ?>" class="btn btn-primary">websitevisits</a>
+        <a href="<?= \Yii::$app->urlManager->createUrl(['students/index']) ?>" class="btn btn-primary">students</a>
     </div>
 </div>

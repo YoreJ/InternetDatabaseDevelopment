@@ -26,6 +26,7 @@ use app\models\ArticleLikes;
 use app\models\ArticleLikesSearch;
 use app\models\VideoLikes;
 use app\models\VideoLikesSearch;
+use app\models\Students;
 
 use WebSocket\Client;
 
@@ -1098,4 +1099,40 @@ class ApiController extends Controller
         ];
     }
 
+    public function actionGetstudent()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $student_id = Yii::$app->request->get('student_id');
+
+        if ($student_id === null) {
+            return [
+                'status' => 0,
+                'message' => 'ID is required.',
+            ];
+        }
+
+        $student = Students::find()->where(['student_id' => $student_id])->one();
+
+        if ($student === null) {
+            return [
+                'status' => 0,
+                'message' => 'Student not found.',
+            ];
+        }
+
+        $studentUrl = \Yii::$app->urlManager->createAbsoluteUrl(['src/personal/' . $student->file_path]);
+
+        // 返回学生的全部信息
+        return [
+            'status' => 1,
+            'student' => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'student_id' => $student->student_id,
+                'role' => $student->role,
+                'file_path' => $studentUrl,
+            ],
+        ];
+    }
 }

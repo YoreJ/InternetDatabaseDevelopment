@@ -128,7 +128,7 @@ export default {
           this.message
         )}`
         axios
-          .post(url)
+          .get(url)
           .then((response) => {
             const status = response.data.status
             if (status === 0) {
