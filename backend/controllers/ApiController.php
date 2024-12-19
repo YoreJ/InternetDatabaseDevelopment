@@ -748,7 +748,13 @@ class ApiController extends Controller
             $dataProvider->pagination->pageSize = 12;
             $dataProvider->pagination->page = $page - 1;
             $videos = $dataProvider->getModels();
-    
+        
+            foreach ($videos as &$video) {
+                $pictureUrl = \Yii::$app->urlManager->createAbsoluteUrl(['src/pic/' . $video->PictureURL]);
+                $video->PictureURL = $pictureUrl;
+            }
+            unset($video);
+        
             return $videos;
         }
     }

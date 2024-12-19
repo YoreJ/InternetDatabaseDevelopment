@@ -74,8 +74,7 @@ export default {
             <InfoBox
               :src="item.PictureURL"        
               :title="item.Title"          
-              :time="item.UploadDate"      
-              :synopsis="item.Description"
+              :time="item.UploadDate"
             />
           </router-link>
         </div>
