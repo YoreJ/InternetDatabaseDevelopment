@@ -1,173 +1,386 @@
+<template>
+  <div class="videos-container">
+    <!-- 头部统计区域 -->
+    <div class="header-section">
+      <div class="header-content">
+        <h1 class="main-title">视频专区</h1>
+        <p class="subtitle">探索AI视觉世界</p>
+        <div class="video-stats">
+          <div class="stat-item">
+            <i class="ni ni-camera-compact text-primary"></i>
+            <h3>{{ Math.floor(pagecount/8) || 0 }}</h3>
+            <p>视频总数</p>
+          </div>
+          <div class="stat-item">
+            <i class="ni ni-watch-time text-info"></i>
+            <h3>24/7</h3>
+            <p>实时更新</p>
+          </div>
+          <div class="stat-item">
+            <i class="ni ni-time-alarm text-success"></i>
+            <h3>{{ currentDate }}</h3>
+            <p>最近更新</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 视频列表区域 -->
+    <div class="main-content">
+      <!-- 加载状态 -->
+      <div v-if="loading" class="loading-state">
+        <i class="ni ni-settings-gear-65 spin"></i>
+        <p>加载中...</p>
+      </div>
+
+      <!-- 视频网格 -->
+      <div v-else class="videos-grid">
+        <div v-for="video in movieList" :key="video.VideoID" class="video-card">
+          <router-link :to="'/movie/' + video.VideoID">
+            <div class="card-content">
+              <div class="thumbnail-wrapper">
+                <img :src="video.PictureURL" :alt="video.Title" class="video-thumbnail">
+                <div class="play-overlay">
+                  <i class="ni ni-button-play"></i>
+                </div>
+              </div>
+              <div class="video-info">
+                <h3 class="video-title">{{ video.Title }}</h3>
+                <div class="video-meta">
+                  <span class="meta-item">
+                    <i class="ni ni-calendar-grid-58"></i>
+                    {{ formatDate(video.UploadDate) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </router-link>
+        </div>
+      </div>
+
+      <!-- 分页器 -->
+      <div class="pagination-wrapper">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="pagecount"
+          hide-on-single-page
+          @current-change="handlePageChange"
+        />
+      </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <el-backtop :right="100" :bottom="100" />
+  </div>
+</template>
+
 <script>
-// 导入电影信息展示组件 InfoBox
-import InfoBox from '../components/InfoBox.vue'
-// 导入 axios，用于发起 HTTP 请求
 import axios from 'axios'
 
 export default {
+  name: 'VideosList',
+  
   data() {
     return {
-      movieList: [], // 存储电影列表数据
-      pagecount: 1 // 存储分页总条数，初始为 1
+      movieList: [],
+      pagecount: 0,
+      loading: false,
+      currentDate: new Date().toLocaleDateString('zh-CN')
     }
   },
-  // Vue 生命周期钩子，组件挂载完成后调用
+
   mounted() {
-    this.getUrl() // 获取电影列表数据
-    this.getpage() // 获取分页总数
+    this.getUrl()
+    this.getpage()
   },
-  components: {
-    InfoBox // 注册 InfoBox 组件，用于显示电影信息
-  },
+
   methods: {
-    // 获取电影列表数据
-    getUrl() {
-      axios
-        .post('http://localhost:8080/api/getvideo') // 向后端 API 发起 POST 请求
-        .then((response) => {
-          this.movieList = response.data // 将响应数据赋值给 movieList
-        })
-        .catch((error) => {
-          console.error('请求失败', error) // 请求失败时在控制台输出错误信息
-        })
+    async getUrl() {
+      this.loading = true
+      try {
+        const response = await axios.post('http://localhost:8080/api/getvideo')
+        this.movieList = response.data
+      } catch (error) {
+        console.error('请求失败', error)
+      } finally {
+        this.loading = false
+      }
     },
-    // 处理分页变化的回调函数
-    handlePageChange(page) {
-      axios
-        .post('http://localhost:8080/api/getvideo?page=' + page) // 根据页码发起请求
-        .then((response) => {
-          const elBacktop = document.querySelector('.el-backtop') // 获取返回顶部按钮
-          this.movieList = response.data // 更新电影列表数据
-          elBacktop.click() // 模拟点击返回顶部按钮，回到页面顶部
-        })
-        .catch((error) => {
-          console.error('请求失败', error) // 请求失败时在控制台输出错误信息
-        })
+
+    async handlePageChange(page) {
+      this.loading = true
+      try {
+        const response = await axios.post('http://localhost:8080/api/getvideo?page=' + page)
+        this.movieList = response.data
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } catch (error) {
+        console.error('请求失败', error)
+      } finally {
+        this.loading = false
+      }
     },
-    // 获取分页总数
-    getpage() {
-      axios
-        .post('http://localhost:8080/api/getvideopagecount') // 请求后端获取分页总数
-        .then((response) => {
-          this.pagecount = response.data * 8 // 假设后端返回的是页数，将其转换为总条数
-        })
-        .catch((error) => {
-          console.error('请求失败', error) // 请求失败时在控制台输出错误信息
-        })
+
+    async getpage() {
+      try {
+        const response = await axios.post('http://localhost:8080/api/getvideopagecount')
+        this.pagecount = response.data * 8
+      } catch (error) {
+        console.error('请求失败', error)
+      }
+    },
+
+    formatDate(dateString) {
+      try {
+        const date = new Date(dateString)
+        return date.toLocaleDateString('zh-CN')
+      } catch (error) {
+        return '暂无日期'
+      }
     }
   }
 }
 </script>
 
-<template>
-  <!-- 主容器 -->
-  <div class="movieContainer">
-    <!-- 包裹所有电影项目 -->
-    <div class="movieBox">
-      <!-- 电影列表容器 -->
-      <div class="movieItemBox">
-        <!-- 遍历 movieList 动态渲染电影项目 -->
-        <div v-for="item in movieList" :key="item.VideoID" class="movieItem">
-          <!-- 路由链接，点击跳转到对应电影的详情页面 -->
-          <router-link :to="'/movie/' + item.VideoID">
-            <!-- 使用 InfoBox 组件展示电影信息 -->
-            <InfoBox
-              :src="item.PictureURL"        
-              :title="item.Title"          
-              :time="item.UploadDate"
-            />
-          </router-link>
-        </div>
-      </div>
-      <!-- 分页组件 -->
-      <el-pagination
-        background
-        layout="prev, pager, next"       
-        :total="pagecount"               
-        hide-on-single-page              
-        @current-change="handlePageChange" 
-      />
-    </div>
-  </div>
-  <!-- 返回顶部按钮 -->
-  <el-backtop :right="100" :bottom="100" />
-</template>
+<style scoped>
+.videos-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1f35 0%, #2d3250 100%);
+  color: #ffffff;
+}
 
-<style>
-/*
-html, body {
-  margin: 0;
-  padding: 0;
+.header-section {
+  min-height: 40vh;
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+              url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3N2Zz4=');
+  padding: 4rem 2rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.main-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #7795f8, #6772e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #a8b2d1;
+  margin-bottom: 3rem;
+}
+
+.video-stats {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-top: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  transition: transform 0.3s ease;
+  min-width: 200px;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-item i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #7795f8;
+}
+
+.stat-item h3 {
+  font-size: 2rem;
+  color: #7795f8;
+  margin: 0.5rem 0;
+}
+
+.main-content {
+  position: relative;
+  margin-top: -3rem;
+  padding: 3rem 2rem 2rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 2;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.video-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(119, 149, 248, 0.3);
+}
+
+.thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 宽高比 */
+  overflow: hidden;
+}
+
+.video-thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: url('../assets/imgs/back2.png') no-repeat center center;
-  background-size: cover;  
-}
-*/
-
-
-/* 主容器样式 */
-.movieContainer {
-  display: flex; /* 使用 Flexbox 布局 */
-  justify-content: center; /* 水平方向居中 */
-  flex-direction: column; /* 子元素垂直排列 */
-  align-items: center; /* 垂直方向居中 */
-  margin-top: 10vh; /* 上外边距为视口高度的 10% */
-  width: 100vw; /* 宽度为视口宽度的 100% */
-  height: auto; /* 高度自动适应内容 */
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-/* 包裹所有电影项目的容器 */
-.movieBox {
-  display: flex; /* 使用 Flexbox 布局 */
-  flex-wrap: wrap; /* 自动换行 */
-  flex-direction: row; /* 水平方向排列子元素 */
-  justify-content: center; /* 子元素水平居中 */
-
-  background-color: rgba(255, 255, 255, 0.7); /* 半透明白色背景 */
-  border-radius: 15px; /* 圆角 */
-  width: 90%; /* 宽度为父容器的 90% */
-  height: auto; /* 高度根据内容自动调整 */
-  padding: 30px; /* 内边距为 30px */
-
-
-  background: url('../assets/imgs/back2.png') no-repeat center center;
-  background-size: cover; /* 背景图片覆盖整个容器 */
+.play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* 电影项目容器 */
-.movieItemBox {
-  display: flex; /* 使用 Flexbox 布局 */
-  flex-wrap: wrap; /* 自动换行 */
-  flex-direction: row; /* 水平方向排列子元素 */
-  justify-content: center; /* 子元素水平居中 */
-  width: 100%; /* 宽度为父容器的 100% */
+.play-overlay i {
+  font-size: 3rem;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 单个电影项目样式 */
-.movieItem {
-  display: flex; /* 使用 Flexbox 布局 */
-  flex-direction: row; /* 子元素水平排列 */
-  align-items: center; /* 子元素垂直居中 */
-  padding: 20px; /* 内边距为 20px */
-  width: auto; /* 宽度自动适应内容 */
-  height: auto; /* 高度自动适应内容 */
-  margin: 20px 30px; /* 上下外边距为 20px，左右外边距为 30px */
+.video-card:hover .play-overlay {
+  opacity: 1;
 }
 
-/* 图片容器样式 */
-.picBox {
-  display: flex; /* 使用 Flexbox 布局 */
-  height: 100%; /* 高度为父容器的 100% */
-  width: 20%; /* 宽度为父容器的 20% */
+.video-card:hover .video-thumbnail {
+  transform: scale(1.05);
 }
 
-/* 内容容器样式 */
-.contentBox {
-  display: flex; /* 使用 Flexbox 布局 */
-  flex-direction: column; /* 子元素垂直排列 */
-  justify-content: flex-start; /* 子元素顶部对齐 */
-  margin-left: 40px; /* 左外边距为 40px */
-  height: 100%; /* 高度为父容器的 100% */
+.video-info {
+  padding: 1.5rem;
+}
+
+.video-title {
+  font-size: 1.25rem;
+  color: #ffffff;
+  margin: 0 0 1rem;
+  line-height: 1.4;
+}
+
+.video-meta {
+  display: flex;
+  gap: 1rem;
+  color: #a8b2d1;
+  font-size: 0.9rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meta-item i {
+  color: #7795f8;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+}
+
+.loading-state i {
+  font-size: 2rem;
+  color: #7795f8;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Element UI 分页器样式 */
+:deep(.el-pagination.is-background .el-pager li:not(.disabled).active) {
+  background-color: #7795f8;
+}
+
+:deep(.el-pagination.is-background .el-pager li:not(.disabled):hover) {
+  color: #7795f8;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .header-section {
+    padding: 3rem 1rem;
+    min-height: auto;
+  }
+
+  .main-title {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .video-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .stat-item {
+    min-width: auto;
+  }
+
+  .main-content {
+    margin-top: -30px;
+    padding: 1rem;
+  }
+
+  .videos-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .video-info {
+    padding: 1rem;
+  }
 }
 </style>

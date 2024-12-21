@@ -1,12 +1,18 @@
 <template>
-  <div
-    class="likebtn"
+  <button
+    class="like-button"
+    :class="{ 'is-liked': liked }"
     @mouseover="startTimer"
     @mouseleave="resetTimer"
     @click="addLikenum"
   >
-    {{ buttonText }}
-  </div>
+    <span class="like-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="heart-icon">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </span>
+    <span class="like-text">{{ buttonText }}</span>
+  </button>
 </template>
 
 <script>
@@ -15,7 +21,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      liked: this.like // 初始化 liked 状态
+      liked: this.like
     }
   },
   props: {
@@ -38,108 +44,159 @@ export default {
   },
   computed: {
     buttonText() {
-      console.log(this.liked)
-      return this.liked ? '取消点赞' : '点一个赞'
+      return this.liked ? '已点赞' : '点赞'
     }
   },
   methods: {
     addLikenum() {
-      const userid = sessionStorage.getItem('UserID') || this.userid
-      const id = this.id || this.$route.params.id
+      const userid = sessionStorage.getItem('UserID') || this.userid;
+      const id = this.id || this.$route.params.id;
 
       if (this.type === 'v') {
-        const url = `http://localhost:8080/api/likevideo?userId=${userid}&videoId=${id}`
+        const url = `http://localhost:8080/api/likevideo?userId=${userid}&videoId=${id}`;
         axios.get(url)
           .then((response) => {
-            console.log('操作成功', response.data)
-            this.liked = !this.liked
+            console.log('操作成功', response.data);
+            this.liked = !this.liked;
+            this.$emit('click');
           })
           .catch((error) => {
-            console.error('发送数据失败', error)
-          })
+            console.error('发送数据失败', error);
+          });
       } 
       else if (this.type === 'a') {
-        const url = `http://localhost:8080/api/likearticle?userId=${userid}&articleId=${id}`
+        const url = `http://localhost:8080/api/likearticle?userId=${userid}&articleId=${id}`;
         axios.get(url)
           .then((response) => {
-            console.log('操作成功', response.data)
-            this.liked = !this.liked
+            console.log('操作成功', response.data);
+            this.liked = !this.liked;
+            this.$emit('click');
           })
           .catch((error) => {
-            console.error('发送数据失败', error)
-          })
+            console.error('发送数据失败', error);
+          });
       }
     },
     startTimer() {
-      // 如果有需要实现的定时器逻辑，请在这里添加
+      // 保留原有的定时器逻辑接口
     },
     resetTimer() {
-      // 如果有需要实现的定时器重置逻辑，请在这里添加
+      // 保留原有的定时器逻辑接口
     }
   }
 }
 </script>
 
 <style scoped>
-.likebtn {
-  display: inline-block;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-  text-decoration: none;
-  font-family: sans-serif;
-  font-weight: 600;
-  font-size: 2em;
-  padding: 0.75em 1em;
+.like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  background-color: #007bff;
-  border: 0.15em solid #007bff;
-  border-radius: 2em;
-  transition: all 0.3s ease;
-  margin-bottom: 3vh;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.likebtn:before,
-.likebtn:after {
+.like-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.like-button:active {
+  transform: translateY(0);
+}
+
+.like-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.heart-icon {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.like-button:hover .heart-icon {
+  transform: scale(1.1);
+}
+
+.like-button.is-liked {
+  background: rgba(255, 99, 132, 0.2);
+  color: #ff6384;
+}
+
+.like-button.is-liked .heart-icon {
+  animation: heartBeat 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.like-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Hover effect */
+.like-button::before {
   content: '';
   position: absolute;
-  top: -1.5em;
-  z-index: -1;
-  width: 200%;
-  aspect-ratio: 1;
-  border: none;
-  border-radius: 40%;
-  background-color: rgba(0, 100, 253, 0.25);
-  transition: transform 0.3s, background-color 0.3s;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.likebtn:before {
-  left: -80%;
-  transform: translate3d(0, 5em, 0) rotate(-340deg);
+.like-button:hover::before {
+  opacity: 1;
 }
 
-.likebtn:after {
-  right: -80%;
-  transform: translate3d(0, 5em, 0) rotate(390deg);
+/* Dark mode optimization */
+@media (prefers-color-scheme: dark) {
+  .like-button {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .like-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
 }
 
-.likebtn:hover,
-.likebtn:focus {
-  color: #fff;
-  background-color: #0056b3;
-  border-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .like-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .like-icon {
+    width: 1rem;
+    height: 1rem;
+  }
 }
-
-.likebtn:hover:before,
-.likebtn:hover:after,
-.likebtn:focus:before,
-.likebtn:focus:after {
-  transform: none;
-  background-color: rgba(0, 114, 253, 0.75);
-}
-
 </style>

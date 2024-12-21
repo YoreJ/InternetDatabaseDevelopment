@@ -71,18 +71,23 @@
       </div>
       <div class="team-grid">
         <div class="team-row">
-          <MenberBox :fullname="name1"></MenberBox>
-          <MenberBox :fullname="name2"></MenberBox>
+          <MemberBox 
+            v-for="member in teamMembers.slice(0, 2)" 
+            :key="member.name"
+            :memberInfo="member"
+          />
         </div>
         <div class="team-row">
-          <MenberBox :fullname="name3"></MenberBox>
-          <MenberBox :fullname="name4"></MenberBox>
+          <MemberBox 
+            v-for="member in teamMembers.slice(2)" 
+            :key="member.name"
+            :memberInfo="member"
+          />
         </div>
       </div>
     </div>
-
-    <!-- 作业下载部分 -->
-    <div class="download-section">
+     <!-- 作业下载部分 -->
+     <div class="download-section">
       <div class="section-header">
         <h2 class="section-title">作业下载</h2>
         <div class="header-underline"></div>
@@ -109,18 +114,20 @@
 </template>
 
 <script>
-import MenberBox from '../components/MenberBox.vue'
+import MemberBox from '../components/MenberBox.vue'
 import axios from 'axios'
 
 export default {
+  name: 'About',
+  components: {
+    MemberBox
+  },
+  
+
   data() {
     return {
       views: 0,
-      Info: '',
-      name1: '徐海潆',
-      name2: '王禹衡',
-      name3: '唐明昊',
-      name4: '姜宇',
+      // Added back downloadSrc from file 1
       downloadSrc: [
         {
           title: '徐海潆',
@@ -142,37 +149,120 @@ export default {
           title: '姜宇',
           link: 'public/data/2112414王思宇个人作业.zip'
         }
+      ],
+      teamMembers: [
+        {
+          name: '徐海潆',
+          info: '前端开发工程师 / UI设计师',
+          avatar: '/src/assets/avatars/member1.jpg',
+          contactList: [
+            {
+              color: '#c71610',
+              icon: 'fa-solid fa-envelope',
+              content: 'example1@email.com',
+              link: 'mailto:example1@email.com'
+            },
+            {
+              color: '#171515',
+              icon: 'fa-brands fa-github',
+              content: 'github-username1',
+              link: 'https://github.com/github-username1'
+            },
+            {
+              color: '#1ed76d',
+              icon: 'fa-brands fa-weixin',
+              content: 'WeChat-ID1'
+            }
+          ]
+        },
+        {
+          name: '王禹衡',
+          info: '全栈开发工程师',
+          avatar: '/src/assets/avatars/member2.jpg',
+          contactList: [
+            {
+              color: '#c71610',
+              icon: 'fa-solid fa-envelope',
+              content: 'example2@email.com',
+              link: 'mailto:example2@email.com'
+            },
+            {
+              color: '#171515',
+              icon: 'fa-brands fa-github',
+              content: 'github-username2',
+              link: 'https://github.com/github-username2'
+            },
+            {
+              color: '#1ed76d',
+              icon: 'fa-brands fa-weixin',
+              content: 'WeChat-ID2'
+            }
+          ]
+        },
+        {
+          name: '唐明昊',
+          info: '后端开发工程师',
+          avatar: '/src/assets/avatars/member3.jpg',
+          contactList: [
+            {
+              color: '#c71610',
+              icon: 'fa-solid fa-envelope',
+              content: 'example3@email.com',
+              link: 'mailto:example3@email.com'
+            },
+            {
+              color: '#171515',
+              icon: 'fa-brands fa-github',
+              content: 'github-username3',
+              link: 'https://github.com/github-username3'
+            },
+            {
+              color: '#1ed76d',
+              icon: 'fa-brands fa-weixin',
+              content: 'WeChat-ID3'
+            }
+          ]
+        },
+        {
+          name: '姜宇',
+          info: '数据工程师',
+          avatar: '/src/assets/avatars/member4.jpg',
+          contactList: [
+            {
+              color: '#c71610',
+              icon: 'fa-solid fa-envelope',
+              content: 'example4@email.com',
+              link: 'mailto:example4@email.com'
+            },
+            {
+              color: '#171515',
+              icon: 'fa-brands fa-github',
+              content: 'github-username4',
+              link: 'https://github.com/github-username4'
+            },
+            {
+              color: '#1ed76d',
+              icon: 'fa-brands fa-weixin',
+              content: 'WeChat-ID4'
+            }
+          ]
+        }
       ]
     }
   },
-  components: {
-    MenberBox
-  },
+
   mounted() {
     this.checkViews()
-    this.getInfo()
   },
+
   methods: {
-    checkViews() {
-      axios
-        .get('http://localhost:8080/api/getwebviews')
-        .then((response) => {
-          this.views = response.data.visitCount
-          console.log('访问量:', this.views)
-        })
-        .catch((error) => {
-          console.error('请求失败', error)
-        })
-    },
-    getInfo() {
-      axios
-        .post('http://localhost:8080/api/getpersonalinfo?name=网站介绍')
-        .then((response) => {
-          this.Info = response.data.Info
-        })
-        .catch((error) => {
-          console.error('请求失败', error)
-        })
+    async checkViews() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/getwebviews')
+        this.views = response.data.visitCount
+      } catch (error) {
+        console.error('获取访问量失败:', error)
+      }
     }
   }
 }
@@ -293,14 +383,44 @@ export default {
   box-shadow: 0 8px 20px rgba(130, 170, 255, 0.1);
 }
 
-.intro-content {
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 2rem;
+}
+
+.feature-details h3 {
+  font-size: 1.2rem;
+  color: #4c6ef5;
+  margin-bottom: 0.5rem;
+}
+
+.feature-details p {
   color: #495057;
-  line-height: 1.8;
-  font-size: 1.1rem;
+  line-height: 1.6;
 }
 
 .team-section {
-  margin-bottom: 5rem;
+  margin-bottom: 6rem;
 }
 
 .team-grid {
@@ -316,6 +436,50 @@ export default {
   margin: 0 2rem;
 }
 
+@media (max-width: 768px) {
+  .about-container {
+    padding: 1rem;
+  }
+
+  .site-title {
+    font-size: 2rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 1.5rem;
+  }
+
+  .views-counter {
+    padding: 0.5rem 1rem;
+  }
+
+  .views-count {
+    font-size: 1.2rem;
+  }
+
+  .team-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .feature-item {
+    padding: 1rem;
+  }
+}
+
+/* Add back download section styles from file 1 */
 .download-section {
   margin-bottom: 4rem;
   padding: 2rem;
@@ -366,46 +530,16 @@ export default {
   font-size: 1rem;
 }
 
+/* Rest of the styles from file 2 */
 @media (max-width: 768px) {
   .about-container {
     padding: 1rem;
-  }
-
-  .site-title {
-    font-size: 2rem;
-  }
-
-  .team-row {
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
   }
 
   .download-grid {
     grid-template-columns: 1fr;
   }
 
-  .section-title {
-    font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-section {
-    padding: 1.5rem;
-  }
-
-  .views-counter {
-    padding: 0.5rem 1rem;
-  }
-
-  .views-count {
-    font-size: 1.2rem;
-  }
-
-  .team-logo {
-    width: 60px;
-    height: 60px;
-  }
+  /* Other media queries remain the same */
 }
 </style>

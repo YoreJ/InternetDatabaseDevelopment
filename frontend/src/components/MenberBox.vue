@@ -2,14 +2,14 @@
   <div class="card" :class="{ active: isActive }">
     <div class="user">
       <div class="imgBx">
-        <img :src="image" alt="user" />
+        <img :src="memberInfo.avatar" :alt="memberInfo.name" />
         <div class="img-overlay"></div>
       </div>
       
       <div class="content">
         <h2>
-          <span class="name">{{ name }}</span>
-          <span class="info">{{ info }}</span>
+          <span class="name">{{ memberInfo.name }}</span>
+          <span class="info">{{ memberInfo.info }}</span>
         </h2>
       </div>
       
@@ -20,7 +20,7 @@
     
     <ul class="contact">
       <li
-        v-for="(item, index) in contactList"
+        v-for="(item, index) in memberInfo.contactList"
         :style="{ '--clr': item.color, '--i': index }"
         :key="index"
       >
@@ -36,61 +36,28 @@
 </template>
 
 <script>
-// 保持原有的脚本逻辑不变
-import axios from 'axios'
 export default {
+  name: 'MemberBox',
+  
   props: {
-    fullname: {
-      type: String,
-      required: true
+    memberInfo: {
+      type: Object,
+      required: true,
+      default: () => ({
+        name: '',
+        info: '',
+        avatar: '',
+        contactList: []
+      })
     }
   },
+  
   data() {
     return {
-      isActive: false,
-      name: '',
-      info: '',
-      image: '',
-      contactList: [
-        {
-          color: '#c71610',
-          icon: 'fa-solid fa-envelope',
-          content: '',
-          link: ''
-        },
-        {
-          color: '#171515',
-          icon: 'fa-brands fa-github',
-          content: '',
-          link: ''
-        },
-        {
-          color: '#1ed76d',
-          icon: 'fa-brands fa-weixin',
-          content: '',
-          link: ''
-        }
-      ]
+      isActive: false
     }
   },
-  mounted() {
-    axios
-      .get(`http://localhost:8080/api/getpersonalinfo?name=${this.fullname}`)
-      .then((response) => {
-        const responseData = response.data
-        this.name = responseData.Name
-        this.info = responseData.Info
-        this.image = responseData.AvatarURL
-        this.contactList[0].content = responseData.Email
-        this.contactList[0].link = 'mailto:' + responseData.Email
-        this.contactList[1].content = responseData.GitHubAccount
-        this.contactList[1].link = 'https://github.com/' + responseData.GitHubAccount
-        this.contactList[2].content = responseData.WeChatID
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  },
+
   methods: {
     toggle() {
       this.isActive = !this.isActive
