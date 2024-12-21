@@ -1,74 +1,148 @@
 <template>
   <div class="app-wrapper">
-    <div v-if="show" class="App-Header">
+    <div v-show="show" class="app-header">
       <NavBar></NavBar>
     </div>
-    <transition name="fade">
-      <div class="App-Containner">
-        <router-view></router-view>
-      </div>
+    
+    <transition name="fade" mode="out-in">
+      <main class="app-container">
+        <router-view v-slot="{ Component }">
+          <component :is="Component" />
+        </router-view>
+      </main>
     </transition>
-    <div v-if="show" class="App-Footer">
+    
+    <div v-show="show" class="app-footer">
       <WaveFoot></WaveFoot>
     </div>
   </div>
 </template>
+
 <script>
 import NavBar from './components/NavBar.vue'
 import WaveFoot from './components/WaveFoot.vue'
 import axios from 'axios'
+
 export default {
   name: 'App',
   components: {
     NavBar,
     WaveFoot
   },
+  
   computed: {
     show() {
-      const meta = this.$route.meta
-
+      const { meta } = this.$route
       return !meta || meta.showNavBar !== false
     }
   },
-  mounted() {
-    this.AddWebView()
+  
+  created() {
+    // 添加错误处理
+    window.addEventListener('unhandledrejection', this.handleError)
   },
+  
+  mounted() {
+    this.addWebView()
+  },
+  
+  beforeUnmount() {
+    window.removeEventListener('unhandledrejection', this.handleError)
+  },
+  
   methods: {
-    AddWebView() {
-      axios.post('http://localhost:8080/api/addwebviews').catch((error) => {
-        console.error('浏览量增加失败', error)
-      })
+    async addWebView() {
+      try {
+        const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+        await axios.post(`${baseURL}/api/addwebviews`)
+      } catch (error) {
+        console.error('Failed to increment view count:', error)
+      }
+    },
+    
+    handleError(event) {
+      console.error('Unhandled promise rejection:', event.reason)
+      // 可以添加错误上报逻辑
     }
   }
 }
 </script>
 
 <style>
+/* 重置和基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* 应用程序容器 */
 .app-wrapper {
-  min-height: 100vh;
-  background: url("https://res.cloudinary.com/dci1eujqw/image/upload/v1616769558/Codepen/waldemar-brandt-aThdSdgx0YM-unsplash_cnq4sb.jpg");
-}
-
-.App-Header {
-  height: 3vh;
-  box-shadow: 0px 2px 4px rgba(187, 192, 187, 0.1);
-}
-
-.App-Containner {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  background: transparent; /* 移除默认背景 */
 }
 
-.App-Footer {
+/* 头部样式 */
+
+/* 主容器样式 */
+.app-container {
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
 }
 
+/* 页脚样式 */
+.app-footer {
+  margin-top: auto;
+  background: transparent;
+}
+
+/* 过渡动画 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s;
+  transition: opacity 0.3s ease;
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 16px;
+  }
+  
+  .app-header {
+    height: 50px;
+  }
+}
+
+/* 打印样式优化 */
+@media print {
+  .app-header,
+  .app-footer {
+    display: none;
+  }
+  
+  .app-container {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+
+
 </style>

@@ -1,199 +1,625 @@
+<template>
+  <div class="home-container">
+    <!-- 网站介绍区域 -->
+    <div class="hero-section">
+      <div class="hero-content">
+        <h1 class="main-title">探索 AI 的未来</h1>
+        <p class="subtitle">发现人工智能的无限可能</p>
+        <div class="hero-stats">
+          <div class="stat-item" @click="addWebView">
+            <h3>{{ viewCount }}</h3>
+            <p>今日访问</p>
+          </div>
+          <div class="stat-item">
+            <h3>40+</h3>
+            <p>AI 平台</p>
+          </div>
+          <div class="stat-item">
+            <h3>24/7</h3>
+            <p>实时更新</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 网站介绍部分 -->
+    <div class="intro-section">
+      <h2 class="section-title">关于我们</h2>
+      <div class="intro-grid">
+        <div class="intro-content">
+          <p class="intro-paragraph">
+            欢迎来到AI News Hub，这是一个专注于AI领域前沿动态的资讯平台。我们致力于为用户提供最新、最权威的人工智能发展资讯，涵盖从OpenAI到各大科技公司的创新突破。
+          </p>
+          <div class="feature-list">
+            <div class="feature-item">
+              <span class="feature-icon">🔬</span>
+              <div class="feature-text">最新AI研究成果解读</div>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">🚀</span>
+              <div class="feature-text">AI产品发布动态</div>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">💡</span>
+              <div class="feature-text">AI技术应用案例</div>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">🌐</span>
+              <div class="feature-text">全球AI发展趋势</div>
+            </div>
+          </div>
+        </div>
+        <div class="intro-stats">
+          <div class="stat-box">
+            <div class="stat-number">100+</div>
+            <div class="stat-label">每日更新文章</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">合作伙伴</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">10k+</div>
+            <div class="stat-label">月活跃用户</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">实时资讯</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新闻轮播部分 -->
+    <div class="news-section">
+      <div class="section-header">
+        <h2 class="section-title">AI 前沿资讯</h2>
+        <span class="update-time">最后更新: {{ currentDate }}</span>
+      </div>
+      <div class="carousel-wrapper">
+        <el-carousel :interval="3000" type="card" height="400px" trigger="click">
+          <el-carousel-item v-for="(image, index) in imagePaths" :key="index">
+            <a :href="image.link" target="_blank" rel="noopener noreferrer" class="carousel-link">
+              <div class="carousel-card">
+                <img :src="image.src" alt="News Image" class="carousel-image" loading="lazy" />
+                <div class="carousel-overlay">
+                  <span class="carousel-tag">AI News</span>
+                  <span class="news-time">{{ image.updateTime }}</span>
+                </div>
+              </div>
+            </a>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </div>
+
+    <!-- 视频展示区域 -->
+    <div class="video-section">
+    <div class="section-header">
+      <h2 class="section-title">精选视频</h2>
+      <span class="update-time">最后更新: {{ currentDate }}</span>
+    </div>
+    <div class="video-grid">
+      <!-- 视频1 -->
+      <div class="video-card">
+        <div class="card-header">
+          <h3 class="video-title">OpenAI 年度直播</h3>
+          <span class="video-update-time">2024-03-21</span>
+        </div>
+        <div class="video-container">
+          <video id="player1" playsinline controls>
+            <source src="/src/assets/videos/OpenAI年度直播.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+
+      <!-- 视频2 -->
+      <div class="video-card">
+        <div class="card-header">
+          <h3 class="video-title">Sora 视频全集</h3>
+          <span class="video-update-time">2024-03-20</span>
+        </div>
+        <div class="video-container">
+          <video id="player2" playsinline controls>
+            <source src="/src/assets/videos/sora视频.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+
+      <!-- 视频3 -->
+      <div class="video-card">
+        <div class="card-header">
+          <h3 class="video-title">Claude AI 应用展示</h3>
+          <span class="video-update-time">2024-03-19</span>
+        </div>
+        <div class="video-container">
+          <video id="player3" playsinline controls>
+            <source src="/src/assets/videos/claude视频.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+
+      <!-- 视频4 -->
+      <div class="video-card">
+        <div class="card-header">
+          <h3 class="video-title">GPT-4V 技术解析</h3>
+          <span class="video-update-time">2024-03-18</span>
+        </div>
+        <div class="video-container">
+          <video id="player4" playsinline controls>
+            <source src="/src/assets/videos/gpt4v视频.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</template>
+
 <script>
 import Plyr from 'plyr'
 import 'plyr/dist/plyr.css'
+import axios from 'axios'
 
 export default {
+  name: 'Home',
   data() {
     return {
-      // 修改后的图片路径数组，每个对象包含图片路径和对应的链接
+      currentDate: new Date().toLocaleDateString('zh-CN'),
       imagePaths: [
-        { src: 'src/assets/imgs/change1.jpg', link: 'https://openai.com/' },
-        { src: 'src/assets/imgs/change2.webp', link: 'https://openai.com/index/learning-to-reason-with-llms/' },
-        { src: 'src/assets/imgs/change3.jpg', link: 'https://www.bing.com/?mkt=zh-CN' },
-        { src: 'src/assets/imgs/change4.png', link: 'https://www.doubao.com/chat/' },
-        { src: 'src/assets/imgs/change5.jpg', link: 'https://www.cursor.com/' },
-        { src: 'src/assets/imgs/change6.png', link: 'https://x.ai/' },
-        { src: 'src/assets/imgs/change7.jpg', link: 'https://sora.com/' },
-        { src: 'src/assets/imgs/change8.jpeg', link: 'https://claude.ai/login' },
-      ]
+        { src: 'src/assets/imgs/change1.jpg', link: 'https://openai.com/', updateTime: '2024-03-21' },
+        { src: 'src/assets/imgs/change2.webp', link: 'https://openai.com/index/learning-to-reason-with-llms/', updateTime: '2024-03-20' },
+        { src: 'src/assets/imgs/change3.jpg', link: 'https://www.bing.com/?mkt=zh-CN', updateTime: '2024-03-19' },
+        { src: 'src/assets/imgs/change4.png', link: 'https://www.doubao.com/chat/', updateTime: '2024-03-18' },
+        { src: 'src/assets/imgs/change5.jpg', link: 'https://www.cursor.com/', updateTime: '2024-03-17' },
+        { src: 'src/assets/imgs/change6.png', link: 'https://x.ai/', updateTime: '2024-03-16' },
+        { src: 'src/assets/imgs/change7.jpg', link: 'https://sora.com/', updateTime: '2024-03-15' },
+        { src: 'src/assets/imgs/change8.jpeg', link: 'https://claude.ai/login', updateTime: '2024-03-14' },
+      ],
+      videoList: [
+        {
+          id: 1,
+          title: 'OpenAI 年度直播',
+          src: '../assets/videos/OpenAI年度直播.mp4',
+          updateTime: '2024-03-21'
+        },
+        {
+          id: 2,
+          title: 'Sora 视频全集',
+          src: '../assets/videos/sora视频.mp4',
+          updateTime: '2024-03-20'
+        },
+        {
+          id: 3,
+          title: 'Claude AI 应用展示',
+          src: '../assets/videos/claude视频.mp4',
+          updateTime: '2024-03-19'
+        },
+        {
+          id: 4,
+          title: 'GPT-4V 技术解析',
+          src: '../assets/videos/gpt4v视频.mp4',
+          updateTime: '2024-03-18'
+        }
+      ],
+      viewCount: 0,
+      players: []
     }
   },
   mounted() {
-    this.initPlayer() // 初始化视频播放器
+    this.initPlayer()
+    this.getWebViews()
+  },
+  beforeDestroy() {
+    this.players.forEach(player => {
+      if (player) {
+        player.destroy()
+      }
+    })
   },
   methods: {
-    /**
-     * 初始化 Plyr 视频播放器
-     * 为页面上的两个视频元素（#player1 和 #player2）创建 Plyr 实例
-     */
     initPlayer() {
-      // 初始化第一个视频播放器，绑定到元素 ID 为 player1
-      this.player1 = new Plyr('#player1', {
-        controls: ['play-large', 'progress', 'current-time'], // 控制条包含播放按钮、大型播放按钮、进度条和当前时间
-        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] } // 播放速度选项
+      const playerOptions = {
+        controls: [
+          'play-large',
+          'play',
+          'progress',
+          'current-time',
+          'mute',
+          'volume',
+          'fullscreen'
+        ],
+        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+      }
+      
+      this.videoList.forEach(video => {
+        const player = new Plyr(`#player${video.id}`, playerOptions)
+        this.players.push(player)
       })
-      // 初始化第二个视频播放器，绑定到元素 ID 为 player2
-      this.player2 = new Plyr('#player2', {
-        controls: ['play-large', 'progress', 'current-time'], // 控制条包含播放按钮、大型播放按钮、进度条和当前时间
-        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] } // 播放速度选项
-      })
+    },
+    async getWebViews() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/getwebviews')
+        this.viewCount = response.data.visitCount
+        console.log('访问量:', this.viewCount)
+      } catch (error) {
+        console.error('获取访问量失败:', error)
+      }
+    },
+    async addWebView() {
+      try {
+        // 先增加访问量
+        await axios.post('http://localhost:8080/api/addwebviews')
+        // 然后重新获取最新访问量
+        await this.getWebViews()
+      } catch (error) {
+        console.error('增加访问量失败:', error)
+      }
     }
   }
 }
 </script>
 
-<template>
-  <div class="homeContainer">
-    <h1>AI NEWS</h1>
-    <div class="timeLine">
-      <el-carousel :interval="3000" type="card" height="50vh" trigger="click">
-        <el-carousel-item v-for="(image, index) in imagePaths" :key="index">
-          <a :href="image.link" target="_blank" rel="noopener noreferrer" class="carousel-link">
-            <img :src="image.src" alt="News Image" class="carousel-image" loading="lazy" />
-          </a>
-        </el-carousel-item>
-      </el-carousel>
-    </div>
-
-    <div class="videoPlayer">
-      <h1>OpenAI年度直播</h1>
-      <video id="player1" playsinline controls>
-        <source src="../assets/videos/OpenAI年度直播.mp4" type="video/mp4" />
-      </video>
-    </div>
-
-    <div class="videoPlayer">
-      <h1>32个sora视频全集+提示词中文版</h1>
-      <video id="player2" playsinline controls>
-        <source src="../assets/videos/sora视频.mp4" type="video/mp4" />
-      </video>
-    </div>
-  </div>
-</template>
-
 <style scoped>
-/* 主容器样式 */
-.homeContainer {
-  display: flex; /* 使用 Flexbox 布局 */
-  flex-direction: column; /* 垂直排列子元素 */
-  justify-content: center; /* 在主轴（垂直方向）上居中 */
-  align-items: center; /* 在交叉轴（水平方向）上居中 */
-  width: 90%; /* 宽度为父容器的90% */
-  min-height: 65vh; /* 最小高度为视口高度的65% */
-  margin-top: 10vh; /* 上外边距为视口高度的10% */
-  padding: 20px; /* 内边距为20像素 */
-  background-color: rgba(0, 0, 0, 0.5); /* 添加半透明背景以提高对比度 */
-  border-radius: 15px; /* 圆角半径为15像素 */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* 添加阴影，提升视觉效果 */
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1f35 0%, #2d3250 100%);
+  color: #ffffff;
+  padding: 2rem;
 }
 
-/* 首页标题样式 */
-.homeContainer h1 {
-  color: white; /* 文字颜色为白色 */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文本阴影，增强可读性 */
-  margin-bottom: 3vh; /* 下外边距为视口高度的3% */
-  font-size: 2.5rem; /* 增加字体大小 */
-  letter-spacing: 2px; /* 增加字间距 */
+.hero-section {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+              url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3N2Zz4=');
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 时间线轮播图容器样式 */
-.timeLine {
-  display: block; /* 显示为块级元素 */
-  width: 100%; /* 宽度为100% */
-  height: 50vh; /* 高度为视口高度的50% */
-  margin-bottom: 5vh; /* 下外边距为视口高度的5% */
-  overflow: hidden; /* 隐藏溢出内容 */
-  border-radius: 10px; /* 圆角半径为10像素 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+.hero-content {
+  max-width: 800px;
+  padding: 2rem;
 }
 
-/* 轮播项样式 */
-.timeLine .el-carousel__item {
+.main-title {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #7795f8, #6772e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  color: #a8b2d1;
+}
+
+.hero-stats {
   display: flex;
   justify-content: center;
+  gap: 4rem;
+}
+
+.stat-item {
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-item h3 {
+  font-size: 2.5rem;
+  color: #7795f8;
+  margin-bottom: 0.5rem;
+}
+
+.intro-section {
+  margin-bottom: 4rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.intro-section:hover {
+  transform: translateY(-5px);
+}
+
+.intro-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.intro-content {
+  color: #a8b2d1;
+}
+
+.intro-paragraph {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.feature-item {
+  display: flex;
   align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: transform 0.3s ease;
 }
 
-/* 轮播器中的链接样式 */
-.carousel-link {
-  display: block; /* 将链接设为块级元素 */
-  width: 100%; /* 链接宽度填满父容器 */
-  height: 100%; /* 链接高度填满父容器 */
+.feature-item:hover {
+  transform: translateX(10px);
+  background: rgba(119, 149, 248, 0.1);
 }
 
-/* 轮播图中的图片样式 */
+.feature-icon {
+  font-size: 1.5rem;
+}
+
+.feature-text {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.intro-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.stat-box {
+  background: rgba(119, 149, 248, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+  transform: translateY(-5px);
+}
+
+.stat-number {
+  font-size: 2rem;
+  color: #7795f8;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.section-title {
+  font-size: 2rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+.update-time {
+  font-size: 0.9rem;
+  color: #a8b2d1;
+  background: rgba(119, 149, 248, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}
+
+.video-update-time {
+  font-size: 0.8rem;
+  color: #a8b2d1;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.news-time {
+  font-size: 0.8rem;
+  color: #ffffff;
+  margin-left: 1rem;
+  opacity: 0.8;
+}
+
+.news-section, .video-section {
+  margin-bottom: 4rem;
+}
+
+.carousel-wrapper {
+  margin: 0 -2rem;
+  padding: 2rem;
+}
+
+.carousel-card {
+  position: relative;
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
 .carousel-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 保持比例，填满容器，裁剪溢出 */
-  border-radius: 10px; /* 圆角半径为10像素 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影，提升视觉效果 */
-  transition: transform 0.3s ease; /* 添加过渡效果 */
-  display: block; /* 确保图片为块级元素，避免底部间距 */
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
-.carousel-image:hover {
-  transform: scale(1.05); /* 悬停时放大 */
+.carousel-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
 }
 
-/* 视频播放器容器样式 */
-.videoPlayer {
-  display: flex; /* 使用 Flexbox 布局 */
-  justify-content: center; /* 在主轴（水平方向）上居中 */
-  flex-direction: column; /* 垂直排列子元素 */
-  align-items: center; /* 在交叉轴（水平方向）上居中 */
-  margin-top: 10vh; /* 上外边距为视口高度的10% */
-  max-width: 50%; /* 最大宽度为父容器的50% */
-
-  border-radius: 15px; /* 圆角半径为15像素 */
-  background-color: rgba(255, 255, 255, 0.7); /* 半透明白色背景 */
-  padding: 20px; /* 内边距为20像素 */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+.carousel-tag {
+  background: #7795f8;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
 }
 
-/* 视频播放器标题样式 */
-.videoPlayer h1 {
-  color: #ffffff; /* 文字颜色为白色 */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文本阴影，增强可读性 */
-  font-size: 1.8rem; /* 增加字体大小 */
-  margin-bottom: 1vh; /* 下外边距为视口高度的1% */
-  text-align: center; /* 文本居中 */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
 }
 
-/* 响应式设计 */
+.video-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.video-title {
+  color: #ffffff;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.video-container {
+  padding: 1rem;
+  aspect-ratio: 16/9;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* 自定义 Plyr 播放器样式 */
+:deep(.plyr) {
+  --plyr-color-main: #7795f8;
+  --plyr-video-background: transparent;
+  border-radius: 10px;
+}
+
+/* Element UI Carousel 自定义样式 */
+:deep(.el-carousel__item) {
+  border-radius: 15px;
+}
+
 @media (max-width: 768px) {
-  .homeContainer {
-    width: 95%; /* 减少宽度，适应小屏幕 */
-    margin-top: 5vh; /* 减少上外边距 */
-    padding: 10px; /* 减少内边距 */
+  .home-container {
+    padding: 1rem;
   }
 
-  /* 调整首页标题 */
-  .homeContainer h1 {
-    font-size: 2rem; /* 减少字体大小 */
-    margin-bottom: 2vh; /* 减少下外边距 */
+  .main-title {
+    font-size: 2.5rem;
   }
 
-  /* 调整轮播器高度 */
-  .timeLine {
-    height: 30vh; /* 减少轮播器高度 */
-    margin-bottom: 3vh; /* 减少下外边距 */
+  .subtitle {
+    font-size: 1.2rem;
   }
 
-  /* 调整视频播放器宽度 */
-  .videoPlayer {
-    max-width: 90%; /* 增加视频播放器的最大宽度 */
-    padding: 15px; /* 减少内边距 */
+  .hero-stats {
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  /* 调整视频标题字体大小 */
-  .videoPlayer h1 {
-    font-size: 1.5rem; /* 减少字体大小 */
+  .stat-item {
+    padding: 1rem;
   }
 
-  /* 调整图片悬停效果 */
-  .carousel-image:hover {
-    transform: scale(1.02); /* 减少放大比例 */
+  .intro-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .feature-list {
+    grid-template-columns: 1fr;
+  }
+
+  .intro-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .carousel-wrapper {
+    margin: 0;
+    padding: 1rem;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-item h3 {
+    font-size: 2rem;
+  }
+
+  .video-container {
+    padding: 0.5rem;
+  }
+
+  .update-time {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
   }
 }
 </style>

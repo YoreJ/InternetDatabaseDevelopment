@@ -14,6 +14,7 @@ export default {
       // 获取用户名和密码
       const username = sessionStorage.getItem('Username')
       const password = sessionStorage.getItem('Password')
+      
 
       // 向后端发送请求
       axios

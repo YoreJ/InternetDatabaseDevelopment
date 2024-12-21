@@ -91,13 +91,13 @@ export default {
   font-weight: 600;
   font-size: 2em;
   padding: 0.75em 1em;
-  color: #000000;
-  border: 0.15em solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  background-color: #007bff;
+  border: 0.15em solid #007bff;
   border-radius: 2em;
-  transition: color 0.3s, background-color 0.3s;
+  transition: all 0.3s ease;
   margin-bottom: 3vh;
-
-  user-select: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
 
@@ -127,7 +127,11 @@ export default {
 
 .likebtn:hover,
 .likebtn:focus {
-  color: white;
+  color: #fff;
+  background-color: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 .likebtn:hover:before,
@@ -137,4 +141,5 @@ export default {
   transform: none;
   background-color: rgba(0, 114, 253, 0.75);
 }
+
 </style>
