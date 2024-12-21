@@ -88,6 +88,7 @@ html, body {
   flex-direction: column;
   min-height: 100vh;
   background: transparent; /* 移除默认背景 */
+  
 }
 
 /* 头部样式 */
@@ -96,11 +97,14 @@ html, body {
 .app-container {
   flex: 1;
   width: 100%;
-  max-width: 1440px;
+  max-width: 1500px;  /* 减小最大宽度 */
   margin: 0 auto;
-  padding: 20px;
+  padding: -10px;      /* 减小内边距 */
   position: relative;
 }
+
+/* 响应式布局 */
+
 
 /* 页脚样式 */
 .app-footer {
