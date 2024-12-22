@@ -154,7 +154,7 @@ export default {
         {
           name: '徐海潆',
           info: '前端开发工程师 / UI设计师',
-          avatar: '/src/assets/avatars/member1.jpg',
+          avatar: '/src/assets/avatars/头像1.jpg',
           contactList: [
             {
               color: '#c71610',
@@ -178,7 +178,7 @@ export default {
         {
           name: '王禹衡',
           info: '全栈开发工程师',
-          avatar: '/src/assets/avatars/member2.jpg',
+          avatar: '/src/assets/avatars/头像2.jpg',
           contactList: [
             {
               color: '#c71610',
@@ -202,7 +202,7 @@ export default {
         {
           name: '唐明昊',
           info: '后端开发工程师',
-          avatar: '/src/assets/avatars/member3.jpg',
+          avatar: '/src/assets/avatars/头像3.jpg',
           contactList: [
             {
               color: '#c71610',
@@ -226,7 +226,7 @@ export default {
         {
           name: '姜宇',
           info: '数据工程师',
-          avatar: '/src/assets/avatars/member4.jpg',
+          avatar: '/src/assets/avatars/头像4.jpg',
           contactList: [
             {
               color: '#c71610',
