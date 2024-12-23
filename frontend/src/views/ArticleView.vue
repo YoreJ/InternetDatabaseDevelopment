@@ -165,6 +165,7 @@ export default {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1f35 0%, #2d3250 100%);
   color: #ffffff;
+  padding: 5rem;
 }
 
 .header-section {

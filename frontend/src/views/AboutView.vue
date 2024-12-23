@@ -233,7 +233,7 @@ export default {
   height: 100vh;
   background: linear-gradient(135deg, #f6f9fc 0%, #7dbed6 50%, #e5effd 100%);
   color: #495057;
-  padding: 2rem;
+  padding: 5rem;
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
 }
