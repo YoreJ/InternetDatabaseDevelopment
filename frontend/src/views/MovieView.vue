@@ -55,7 +55,7 @@
                 <div class="video-meta">
                   <span class="meta-item">
                     <i class="ni ni-calendar-grid-58"></i>
-                    {{ formatDate(video.UploadDate) }}
+                    {{ formatDate(video.UpdatedAt) }}
                   </span>
                 </div>
               </div>
@@ -159,6 +159,7 @@ export default {
     formatDate(dateString) {
       try {
         const date = new Date(dateString)
+        console.log('日期:', date)
         return date.toLocaleDateString('zh-CN')
       } catch (error) {
         return '暂无日期'
