@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Coding by XuHaiying 2212180
+ * 使用 Gii 生成了 Users 的 CRUD
+ */
+/**
+ * Designing by WangYuheng 2213040
+ * 参与数据库设计
+ */
 namespace app\models;
 
 use yii\base\Model;

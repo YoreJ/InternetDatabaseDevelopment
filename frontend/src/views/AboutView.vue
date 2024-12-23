@@ -1,6 +1,11 @@
+<!-- Coding by XuHaiying 2212180 -->
+<!-- 完成前端VUE界面的设计、相关功能页面的构建，到美化 -->
+
+<!-- Coding by JinagYu 2210705 -->
+<!-- 前后段接口对接 -->
+
 <template>
   <div class="about-container">
-    <!-- 英雄区域 -->
     <div class="hero-section">
       <div class="hero-content">
         <div class="logo-container">
@@ -196,7 +201,7 @@ export default {
           
           this.downloadSrc.unshift({
             title: '团队作业.zip',
-            link: 'public/data/团队作业(2210705_2213040_2212180_2113927).zip'
+            link: 'public/data/dream_ai_团队作业(2210705_2213040_2212180_2113927).zip'
           });
 
           console.log('Download Sources:', this.downloadSrc);

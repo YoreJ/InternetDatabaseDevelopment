@@ -1,10 +1,13 @@
 <?php
 
 /**
- * Coding by JiangYu 2210705
+ * Coding by TangMinghao 2113927
  * 使用 Gii 生成了 Students 的 CRUD
  */
-
+/**
+ * Designing by WangYuheng 2213040
+ * 参与数据库设计
+ */
 namespace app\models;
 
 use Yii;

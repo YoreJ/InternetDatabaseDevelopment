@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Coding by JiangYu 2210705
+ * Coding by TangMinghao 2113927
  * 使用 Gii 生成了 Students 的 CRUD
  */
 

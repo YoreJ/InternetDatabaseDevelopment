@@ -1,3 +1,9 @@
+<!-- Coding by XuHaiying 2212180 -->
+<!-- 完成前端VUE界面的设计、相关功能页面的构建，到美化 -->
+
+<!-- Coding by JinagYu 2210705 -->
+<!-- 前后段接口对接 -->
+
 <template>
   <div class="chat-page">
     <div class="chat-container">

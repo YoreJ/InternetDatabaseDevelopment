@@ -3,7 +3,7 @@
 -- Host: localhost    Database: AI
 -- ------------------------------------------------------
 -- Server version	8.4.3
-use  AI;
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -132,7 +132,7 @@ CREATE TABLE `Articles` (
   PRIMARY KEY (`ArticleID`),
   KEY `AuthorID` (`AuthorID`),
   CONSTRAINT `Articles_ibfk_1` FOREIGN KEY (`AuthorID`) REFERENCES `Users` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +161,7 @@ CREATE TABLE `Conversations` (
   PRIMARY KEY (`ConversationID`),
   KEY `UserID` (`UserID`),
   CONSTRAINT `Conversations_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,7 +170,7 @@ CREATE TABLE `Conversations` (
 
 LOCK TABLES `Conversations` WRITE;
 /*!40000 ALTER TABLE `Conversations` DISABLE KEYS */;
-INSERT INTO `Conversations` VALUES (6,5,'2024-12-22 12:16:11','2024-12-22 12:16:34','ended'),(7,5,'2024-12-22 12:16:34','2024-12-22 12:21:06','ended'),(8,5,'2024-12-22 12:21:06','2024-12-22 12:25:32','ended'),(9,5,'2024-12-22 12:25:32','2024-12-22 12:25:39','ended'),(10,5,'2024-12-22 12:25:39','2024-12-22 12:25:53','ended'),(11,5,'2024-12-22 12:25:53','2024-12-22 12:26:24','ended'),(12,5,'2024-12-22 12:26:24','2024-12-22 12:27:19','ended'),(13,5,'2024-12-22 12:27:19','2024-12-22 12:28:40','ended'),(14,5,'2024-12-22 12:28:40','2024-12-22 12:29:36','ended'),(15,5,'2024-12-22 12:29:36','2024-12-22 12:31:31','ended'),(16,5,'2024-12-22 12:31:31','2024-12-22 12:33:43','ended'),(17,5,'2024-12-22 12:33:43','2024-12-22 12:35:22','ended'),(18,5,'2024-12-22 12:35:22','2024-12-22 12:35:24','ended'),(19,5,'2024-12-22 12:35:24',NULL,'active');
+INSERT INTO `Conversations` VALUES (6,5,'2024-12-22 12:16:11','2024-12-22 12:16:34','ended'),(7,5,'2024-12-22 12:16:34','2024-12-22 12:21:06','ended'),(8,5,'2024-12-22 12:21:06','2024-12-22 12:25:32','ended'),(9,5,'2024-12-22 12:25:32','2024-12-22 12:25:39','ended'),(10,5,'2024-12-22 12:25:39','2024-12-22 12:25:53','ended'),(11,5,'2024-12-22 12:25:53','2024-12-22 12:26:24','ended'),(12,5,'2024-12-22 12:26:24','2024-12-22 12:27:19','ended'),(13,5,'2024-12-22 12:27:19','2024-12-22 12:28:40','ended'),(14,5,'2024-12-22 12:28:40','2024-12-22 12:29:36','ended'),(15,5,'2024-12-22 12:29:36','2024-12-22 12:31:31','ended'),(16,5,'2024-12-22 12:31:31','2024-12-22 12:33:43','ended'),(17,5,'2024-12-22 12:33:43','2024-12-22 12:35:22','ended'),(18,5,'2024-12-22 12:35:22','2024-12-22 12:35:24','ended'),(19,5,'2024-12-22 12:35:24','2024-12-22 19:54:38','ended'),(20,5,'2024-12-22 19:54:38',NULL,'active');
 /*!40000 ALTER TABLE `Conversations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -230,7 +230,7 @@ CREATE TABLE `Students` (
 
 LOCK TABLES `Students` WRITE;
 /*!40000 ALTER TABLE `Students` DISABLE KEYS */;
-INSERT INTO `Students` VALUES (1,'姜宇','2210705','沙比','2210705姜宇个人作业.zip','15048015057@163.com','https://github.com/YoreJ','15048015057'),(2,'王禹衡','2213040','123456','2213040王禹衡个人作业.zip',NULL,NULL,NULL),(3,'徐海潆','2212180','123456','2212180徐海潆个人作业.zip',NULL,NULL,NULL),(4,'唐明昊','2113927','123456','2113927唐明昊个人作业.zip',NULL,NULL,NULL);
+INSERT INTO `Students` VALUES (1,'姜宇','2210705','结合开发需求，为每个组员分配任务；完成YII2框架后端的主体搭建；实现后端与数据库之间的接口；前后端对接工作；实现大模型API的接口的引入','2210705姜宇个人作业.zip','15048015057@163.com','https://github.com/YoreJ','15048015057'),(2,'王禹衡','2213040','爬取新闻和视频； 辅助姜宇完成SQL文件关系表的构建； 完成SQL文件逻辑的完善和消除外键依赖； 独自完成所有项目文档的编写以及展示PPT的制作','2213040王禹衡个人作业.zip','','',''),(3,'徐海潆','2212180','独自负责完成从前端VUE界面的设计、相关功能页面的构建，到美化；辅助姜宇完成后端接口接入前端； 辅助完成数据与信息的搜集','2212180徐海潆个人作业.zip','','',''),(4,'唐明昊','2113927','协助姜宇完成项目开发需求的设计；辅助修改数据库文件的逻辑；负责完成前端页面的美化，提出了切实可行的方案；实现了数据的验证和部分后端API的调整','2113927唐明昊个人作业.zip','','','');
 /*!40000 ALTER TABLE `Students` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,7 +258,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (1,'admin1','123456','user','default.png','2024-12-15 13:17:05'),(2,'admin2','123456','user','default.png','2024-12-15 13:17:05'),(3,'admin3','123456','user','default.png','2024-12-15 13:17:05'),(4,'admin4','123456','user','default.png','2024-12-15 13:17:05'),(5,'123456','$2y$13$VA55avlCFsoSbXdxDA6mpe0dysOSYTfu2kUAkisK9l7rYIIUntO6W','user','6768146ee3604.jpeg','2024-12-15 14:43:33');
+INSERT INTO `Users` VALUES (1,'user1','invalid password','user','default.png','2024-12-15 13:17:05'),(2,'user2','	invalid password','user','default.png','2024-12-15 13:17:05'),(3,'user3','	invalid password','user','default.png','2024-12-15 13:17:05'),(4,'user4','	invalid password','user','default.png','2024-12-15 13:17:05'),(5,'123456','$2y$13$VA55avlCFsoSbXdxDA6mpe0dysOSYTfu2kUAkisK9l7rYIIUntO6W','admin','6768146ee3604.jpeg','2024-12-15 14:43:33');
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +280,7 @@ CREATE TABLE `VideoComments` (
   KEY `VideoID` (`VideoID`),
   CONSTRAINT `VideoComments_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
   CONSTRAINT `VideoComments_ibfk_2` FOREIGN KEY (`VideoID`) REFERENCES `Videos` (`VideoID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -289,7 +289,6 @@ CREATE TABLE `VideoComments` (
 
 LOCK TABLES `VideoComments` WRITE;
 /*!40000 ALTER TABLE `VideoComments` DISABLE KEYS */;
-INSERT INTO `VideoComments` VALUES (1,1,1,'示例','2023-07-19 02:15:00');
 /*!40000 ALTER TABLE `VideoComments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +379,7 @@ CREATE TABLE `Videos` (
   PRIMARY KEY (`VideoID`),
   KEY `UserID` (`UserID`),
   CONSTRAINT `Videos_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,7 +388,7 @@ CREATE TABLE `Videos` (
 
 LOCK TABLES `Videos` WRITE;
 /*!40000 ALTER TABLE `Videos` DISABLE KEYS */;
-INSERT INTO `Videos` VALUES (1,'ChatGPT仅推出两个月，活跃用户数量破亿','1.mp4',1,'1.jpg','2024-06-22 03:03:00','2024-12-22 06:31:10',57,0),(2,'「第10期」OpenAI年度直播Day10，ChatGPT热线电话','2.mp4',1,'2.jpg','2024-06-21 15:03:00','2024-12-22 07:26:24',4,0),(3,'「第09期」OpenAI年度直播Day9，上线o1 API、实时语音API、偏好微调','3.mp4',1,'3.jpg','2024-04-03 02:03:00','2024-12-22 07:23:32',1,0),(4,'「第08期」OpenAI年度直播Day8，ChatGPT上线搜索引擎','4.mp4',1,'4.jpg','2024-04-02 13:45:00','2024-12-22 07:28:34',2,0),(5,'「第07期」OpenAI年度直播Day7，ChatGPT项目空间','5.mp4',1,'5.jpg','2024-03-12 02:29:00','2024-12-22 07:42:45',5,0),(6,'让ChatGPT写篇新闻报道后，我的“饭碗”保住了','6.mp4',1,'6.jpg','2024-03-11 14:29:00','2024-12-22 07:26:28',2,0),(7,'科技部回应chatGPT热：现象级应用，伦理上要“趋利避害”','7.mp4',1,'7.jpg','2024-04-02 23:51:00','2024-12-22 07:26:43',6,0),(8,'ChatGPT技术探索34：让AI协助完成新闻报道写作','8.mp4',1,'8.jpg','2024-03-12 03:23:00','2024-12-22 07:26:49',5,0),(9,'央视称与chatgpt对话消耗水资源！','9.mp4',1,'9.jpg','2023-02-13 08:48:00','2024-12-15 13:17:06',0,0),(10,'ChatGPT上线搜索引擎，一分钟看完OpenAI发布会Day 8','10.mp4',1,'10.jpg','2023-02-13 08:50:00','2024-12-22 07:42:58',2,0),(11,'央视科普作为新质生产力的大模型、人工智能到底是什么','11.mp4',1,'11.jpg','2023-02-13 10:50:00','2024-12-22 07:26:15',1,0),(12,'ChatGPT上线搜索引擎，一分钟看完OpenAI发布会Day','12.mp4',1,'12.jpg','2023-02-13 10:58:00','2024-12-22 07:26:06',2,0),(13,'新质生产力--大模型','13.mp4',1,'1.jpg','2023-11-27 08:56:00','2024-12-15 13:17:06',0,0),(14,'用chatgpt4预测2024年高考题目，命题组汗流浃背了','14.mp4',1,'14.jpg','2023-02-13 10:50:00','2024-12-15 13:17:06',0,0),(15,'当 OpenAI/ChatGPT 来了以后，未来的程序员会变成...','15.mp4',1,'15.jpg','2023-02-13 10:58:00','2024-12-15 13:17:06',0,0),(20,'插入示例视频','video_676850364e4e4.mp4',5,'cover_676850364e5390.56753594.jpeg','2024-12-22 09:45:26','2024-12-22 17:47:09',1,0);
+INSERT INTO `Videos` VALUES (1,'ChatGPT仅推出两个月，活跃用户数量破亿','1.mp4',1,'1.jpg','2024-06-22 03:03:00','2024-12-22 06:31:10',57,0),(2,'「第10期」OpenAI年度直播Day10，ChatGPT热线电话','2.mp4',1,'2.jpg','2024-06-21 15:03:00','2024-12-22 07:26:24',4,0),(3,'「第09期」OpenAI年度直播Day9，上线o1 API、实时语音API、偏好微调','3.mp4',1,'3.jpg','2024-04-03 02:03:00','2024-12-22 07:23:32',1,0),(4,'「第08期」OpenAI年度直播Day8，ChatGPT上线搜索引擎','4.mp4',1,'4.jpg','2024-04-02 13:45:00','2024-12-22 07:28:34',2,0),(5,'「第07期」OpenAI年度直播Day7，ChatGPT项目空间','5.mp4',1,'5.jpg','2024-03-12 02:29:00','2024-12-22 07:42:45',5,0),(6,'让ChatGPT写篇新闻报道后，我的“饭碗”保住了','6.mp4',1,'6.jpg','2024-03-11 14:29:00','2024-12-22 07:26:28',2,0),(7,'科技部回应chatGPT热：现象级应用，伦理上要“趋利避害”','7.mp4',1,'7.jpg','2024-04-02 23:51:00','2024-12-22 07:26:43',6,0),(8,'ChatGPT技术探索34：让AI协助完成新闻报道写作','8.mp4',1,'8.jpg','2024-03-12 03:23:00','2024-12-22 07:26:49',5,0),(9,'央视称与chatgpt对话消耗水资源！','9.mp4',1,'9.jpg','2023-02-13 08:48:00','2024-12-15 13:17:06',0,0),(10,'ChatGPT上线搜索引擎，一分钟看完OpenAI发布会Day 8','10.mp4',1,'10.jpg','2023-02-13 08:50:00','2024-12-22 07:42:58',2,0),(11,'央视科普作为新质生产力的大模型、人工智能到底是什么','11.mp4',1,'11.jpg','2023-02-13 10:50:00','2024-12-22 07:26:15',1,0),(12,'ChatGPT上线搜索引擎，一分钟看完OpenAI发布会Day','12.mp4',1,'12.jpg','2023-02-13 10:58:00','2024-12-22 07:26:06',2,0),(13,'新质生产力--大模型','13.mp4',1,'1.jpg','2023-11-27 08:56:00','2024-12-15 13:17:06',0,0),(14,'用chatgpt4预测2024年高考题目，命题组汗流浃背了','14.mp4',1,'14.jpg','2023-02-13 10:50:00','2024-12-15 13:17:06',0,0),(15,'当 OpenAI/ChatGPT 来了以后，未来的程序员会变成...','15.mp4',1,'15.jpg','2023-02-13 10:58:00','2024-12-15 13:17:06',0,0),(20,'插入示例视频','video_676850364e4e4.mp4',5,'cover_676850364e5390.56753594.jpeg','2024-12-22 09:45:26','2024-12-23 03:46:53',2,0);
 /*!40000 ALTER TABLE `Videos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -413,7 +412,7 @@ CREATE TABLE `WebsiteVisits` (
 
 LOCK TABLES `WebsiteVisits` WRITE;
 /*!40000 ALTER TABLE `WebsiteVisits` DISABLE KEYS */;
-INSERT INTO `WebsiteVisits` VALUES (1,263);
+INSERT INTO `WebsiteVisits` VALUES (1,271);
 /*!40000 ALTER TABLE `WebsiteVisits` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -426,4 +425,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-23  4:41:39
+-- Dump completed on 2024-12-23 12:58:44

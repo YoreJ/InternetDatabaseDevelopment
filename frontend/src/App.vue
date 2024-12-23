@@ -13,7 +13,7 @@
     </transition>
     
     <div v-show="show" class="app-footer">
-      <WaveFoot></WaveFoot>
+      <!-- <WaveFoot></WaveFoot> -->
     </div>
   </div>
 </template>
