@@ -232,7 +232,7 @@ export default {
 <style scoped>
 .chat-page {
   min-height: 100vh;
-  padding: 1rem;
+  padding: 3rem;
   background: linear-gradient(135deg, #1a1f35 0%, #2d3250 100%);
   display: flex;
   justify-content: center;
