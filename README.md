@@ -47,8 +47,3 @@
   - team
 
     团队文档
-
-## 贡献者贡献统计
-
-<!-- CONTRIBUTORS_TABLE_START -->
-<!-- CONTRIBUTORS_TABLE_END -->
