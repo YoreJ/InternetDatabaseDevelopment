@@ -18,6 +18,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Role')->dropDownList([ 'admin' => 'Admin', 'user' => 'User', ], ['prompt' => '']) ?>
 
+    <?= $form->field($model, 'Avatar')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'CreatedAt')->textInput() ?>
 
     <div class="form-group">

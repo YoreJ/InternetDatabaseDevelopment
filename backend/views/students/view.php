@@ -34,6 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'student_id',
             'role',
             'file_path',
+            'email:email',
+            'github',
+            'wechat',
         ],
     ]) ?>
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 使用 Gii 生成了 Users 的 CRUD
+ */
+
 namespace app\models;
 
 use Yii;
@@ -11,6 +16,7 @@ use Yii;
  * @property string $Username
  * @property string $Password
  * @property string|null $Role
+ * @property string $Avatar
  * @property string|null $CreatedAt
  *
  * @property ArticleComments[] $articleComments
@@ -40,7 +46,7 @@ class Users extends \yii\db\ActiveRecord
             [['Username', 'Password'], 'required'],
             [['Role'], 'string'],
             [['CreatedAt'], 'safe'],
-            [['Username', 'Password'], 'string', 'max' => 255],
+            [['Username', 'Password', 'Avatar'], 'string', 'max' => 255],
         ];
     }
 
@@ -54,6 +60,7 @@ class Users extends \yii\db\ActiveRecord
             'Username' => 'Username',
             'Password' => 'Password',
             'Role' => 'Role',
+            'Avatar' => 'Avatar',
             'CreatedAt' => 'Created At',
         ];
     }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 更新后台界面用于显示数据库，同时使用 Gii 生成了所有的 CRUD 以及前端代码
+ */
+
 /** @var yii\web\View $this */
 
 $this->title = 'My Yii Application';

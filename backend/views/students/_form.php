@@ -20,6 +20,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'file_path')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'github')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'wechat')->textInput(['maxlength' => true]) ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

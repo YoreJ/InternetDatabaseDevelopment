@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 使用 Gii 生成了 ArticleComments 的 CRUD
+ */
+
 namespace app\models;
 
 use yii\base\Model;

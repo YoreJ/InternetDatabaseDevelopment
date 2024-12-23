@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 添加全部接口
+ * 包括：登录、注册、获取用户信息、更新头像、聊天机器人、获取聊天记录、
+ * 获取文章、添加文章、删除文章、增加文章访问量、喜欢文章、获取文章喜欢数、获取是否喜欢文章、评论文章、显示文章评论、删除文章评论、获取文章页数、获取文章总数、
+ * 获取视频、添加视频、删除视频、增加视频访问量、喜欢视频、获取视频喜欢数、获取是否喜欢视频、评论视频、显示视频评论、删除视频评论、获取视频页数、获取视频总数、
+ * 获取学生、获取所有学生
+ */
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -53,7 +62,9 @@ $config = [
                 'api/signup' => 'api/signup', // finish 注册
 
                 'api/getuser' => 'api/getuser', // finish 获取用户信息
+                'api/updateavatar' => 'api/updateavatar', // finish 更新头像
                 'api/chat' => 'api/chatbot', // finish 聊天机器人
+                'api/addonversation' => 'api/addonversation', // finish 获取聊天记录
 
                 'api/getarticle' => 'api/getarticle', // finish 获取文章
                 'api/addarticle' => 'api/addarticle', // finish 添加文章
@@ -66,6 +77,7 @@ $config = [
                 'api/showcommentarticle' => 'api/showcommentarticle', //finish 显示文章评论
                 'api/deletecommentarticle' => 'api/deletecommentarticle', //finish 删除文章评论
                 'api/getarticlepagecount' => 'api/getarticlepagecount', //finish 获取文章页数
+                'api/getarticletotal' => 'api/getarticletotal', //finish 获取文章总数
                 
                 'api/getvideo' => 'api/getvideo', // finish 获取视频
                 'api/addvideo' => 'api/addvideo', // finish 添加视频
@@ -78,8 +90,10 @@ $config = [
                 'api/showcommentvideo' => 'api/showcommentvideo', //finish 显示视频评论
                 'api/deletecommentvideo' => 'api/deletecommentvideo', //finish 删除视频评论  
                 'api/getvideopagecount' => 'api/getvideopagecount', //finish 获取视频页数
+                'api/getvideototal' => 'api/getvideototal', //finish 获取视频总数
 
                 'api/getstudent' => 'api/getstudent', // finish 获取学生
+                'api/getallstudents' => 'api/getallstudents', // finish 获取所有学生
                 
             ],
         ],

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 使用 Gii 生成了 WebsiteVisits 的 CRUD
+ */
+
 namespace app\models;
 
 use Yii;

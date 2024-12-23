@@ -34,6 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'student_id',
             'role',
             'file_path',
+            //'email:email',
+            //'github',
+            //'wechat',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Students $model, $key, $index, $column) {

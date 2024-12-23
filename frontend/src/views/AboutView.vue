@@ -70,24 +70,18 @@
         <div class="header-underline"></div>
       </div>
       <div class="team-grid">
-        <div class="team-row">
+        <div class="team-row" v-for="(row, rowIndex) in teamRows" :key="'row-' + rowIndex">
           <MemberBox 
-            v-for="member in teamMembers.slice(0, 2)" 
-            :key="member.name"
-            :memberInfo="member"
-          />
-        </div>
-        <div class="team-row">
-          <MemberBox 
-            v-for="member in teamMembers.slice(2)" 
-            :key="member.name"
+            v-for="member in row" 
+            :key="member.student_id"
             :memberInfo="member"
           />
         </div>
       </div>
     </div>
-     <!-- 作业下载部分 -->
-     <div class="download-section">
+
+    <!-- 作业下载部分 -->
+    <div class="download-section">
       <div class="section-header">
         <h2 class="section-title">作业下载</h2>
         <div class="header-underline"></div>
@@ -114,155 +108,116 @@
 </template>
 
 <script>
-import MemberBox from '../components/MenberBox.vue'
-import axios from 'axios'
+import MemberBox from '../components/MenberBox.vue'; // 确保路径正确
+import axios from 'axios';
 
 export default {
   name: 'About',
   components: {
     MemberBox
   },
-  
 
   data() {
     return {
       views: 0,
-      // Added back downloadSrc from file 1
-      downloadSrc: [
-        {
-          title: '徐海潆',
-          link: 'public/data/2110951梁晓储个人作业.zip'
-        },
-        {
-          title: '王禹衡',
-          link: 'public/data/2112106方奕个人作业.zip'
-        },
-        {
-          title: '团队作业',
-          link: 'public/data/LFZW_团队作业(2110951_2112106_2112414_2113419).zip'
-        },
-        {
-          title: '唐明昊',
-          link: 'public/data/2113419张昊星个人作业.zip'
-        },
-        {
-          title: '姜宇',
-          link: 'public/data/2112414王思宇个人作业.zip'
-        }
-      ],
-      teamMembers: [
-        {
-          name: '徐海潆',
-          info: '前端开发工程师 / UI设计师',
-          avatar: '/src/assets/avatars/头像1.jpg',
-          contactList: [
-            {
-              color: '#c71610',
-              icon: 'fa-solid fa-envelope',
-              content: 'example1@email.com',
-              link: 'mailto:example1@email.com'
-            },
-            {
-              color: '#171515',
-              icon: 'fa-brands fa-github',
-              content: 'github-username1',
-              link: 'https://github.com/github-username1'
-            },
-            {
-              color: '#1ed76d',
-              icon: 'fa-brands fa-weixin',
-              content: 'WeChat-ID1'
-            }
-          ]
-        },
-        {
-          name: '王禹衡',
-          info: '全栈开发工程师',
-          avatar: '/src/assets/avatars/头像2.jpg',
-          contactList: [
-            {
-              color: '#c71610',
-              icon: 'fa-solid fa-envelope',
-              content: 'example2@email.com',
-              link: 'mailto:example2@email.com'
-            },
-            {
-              color: '#171515',
-              icon: 'fa-brands fa-github',
-              content: 'github-username2',
-              link: 'https://github.com/github-username2'
-            },
-            {
-              color: '#1ed76d',
-              icon: 'fa-brands fa-weixin',
-              content: 'WeChat-ID2'
-            }
-          ]
-        },
-        {
-          name: '唐明昊',
-          info: '后端开发工程师',
-          avatar: '/src/assets/avatars/头像3.jpg',
-          contactList: [
-            {
-              color: '#c71610',
-              icon: 'fa-solid fa-envelope',
-              content: 'example3@email.com',
-              link: 'mailto:example3@email.com'
-            },
-            {
-              color: '#171515',
-              icon: 'fa-brands fa-github',
-              content: 'github-username3',
-              link: 'https://github.com/github-username3'
-            },
-            {
-              color: '#1ed76d',
-              icon: 'fa-brands fa-weixin',
-              content: 'WeChat-ID3'
-            }
-          ]
-        },
-        {
-          name: '姜宇',
-          info: '数据工程师',
-          avatar: '/src/assets/avatars/头像4.jpg',
-          contactList: [
-            {
-              color: '#c71610',
-              icon: 'fa-solid fa-envelope',
-              content: 'example4@email.com',
-              link: 'mailto:example4@email.com'
-            },
-            {
-              color: '#171515',
-              icon: 'fa-brands fa-github',
-              content: 'github-username4',
-              link: 'https://github.com/github-username4'
-            },
-            {
-              color: '#1ed76d',
-              icon: 'fa-brands fa-weixin',
-              content: 'WeChat-ID4'
-            }
-          ]
-        }
-      ]
+      downloadSrc: [], // 动态加载
+      teamMembers: [] // 动态加载
+    }
+  },
+
+  computed: {
+    // 将 teamMembers 分割成多行，每行最多2个成员
+    teamRows() {
+      const rows = [];
+      const perRow = 2;
+      for (let i = 0; i < this.teamMembers.length; i += perRow) {
+        rows.push(this.teamMembers.slice(i, i + perRow));
+      }
+      return rows;
     }
   },
 
   mounted() {
-    this.checkViews()
+    this.checkViews();
+    this.fetchTeamMembers();
   },
 
   methods: {
     async checkViews() {
       try {
-        const response = await axios.get('http://localhost:8080/api/getwebviews')
-        this.views = response.data.visitCount
+        const response = await axios.get('http://localhost:8080/api/getwebviews');
+        this.views = response.data.visitCount;
       } catch (error) {
-        console.error('获取访问量失败:', error)
+        console.error('获取访问量失败:', error);
       }
+    },
+
+    async fetchTeamMembers() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/getallstudents');
+        if (response.data.status === 1) {
+          const students = response.data.students;
+          console.log('Fetched students:', students); // 调试信息
+          const enrichedStudents = students.map(student => ({
+            name: student.name,
+            info: student.role,
+            avatar: `/src/assets/avatars/${this.getAvatarNumber(student.student_id)}.jpg`,
+            contactList: [
+              {
+                color: '#c71610',
+                icon: 'fa-solid fa-envelope',
+                content: student.email,
+                link: 'mailto:' + student.email
+              },
+              {
+                color: '#171515',
+                icon: 'fa-brands fa-github',
+                content: student.github,
+                link: student.github
+              },
+              {
+                color: '#1ed76d',
+                icon: 'fa-brands fa-weixin',
+                content: student.wechat
+              }
+            ],
+            student_id: student.student_id,
+            file_path: student.file_path
+          }));
+          console.log('Enriched students:', enrichedStudents); // 调试信息
+          this.teamMembers = enrichedStudents;
+
+          this.downloadSrc = enrichedStudents
+            .filter(student => student.file_path)
+            .map(student => ({
+              title: `${student.student_id} ${student.name} 个人作业.zip`,
+              link: student.file_path
+            }));
+          
+          this.downloadSrc.unshift({
+            title: '团队作业.zip',
+            link: 'public/data/团队作业(2210705_2213040_2212180_2113927).zip'
+          });
+
+          console.log('Download Sources:', this.downloadSrc);
+          
+        } else {
+          console.warn('获取所有学生信息失败:', response.data.message);
+        }
+      } catch (error) {
+        console.error('获取所有学生信息时出错:', error);
+      }
+    },
+
+    // 根据 student_id 获取头像编号
+    getAvatarNumber(studentId) {
+      const mapping = {
+        '2210705': 1,
+        '2213040': 2,
+        '2212180': 3,
+        '2113927': 4
+      };
+      return mapping[studentId] || 1;
     }
   }
 }
@@ -270,7 +225,7 @@ export default {
 
 <style scoped>
 .about-container {
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(135deg, #f6f9fc 0%, #7dbed6 50%, #e5effd 100%);
   color: #495057;
   padding: 2rem;
@@ -454,6 +409,10 @@ export default {
     align-items: center;
     gap: 8rem;
   }
+
+  .download-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -479,7 +438,7 @@ export default {
   }
 }
 
-/* Add back download section styles from file 1 */
+/* 下载部分样式 */
 .download-section {
   margin-bottom: 4rem;
   padding: 2rem;
@@ -528,18 +487,5 @@ export default {
   color: #495057;
   font-weight: 500;
   font-size: 1rem;
-}
-
-/* Rest of the styles from file 2 */
-@media (max-width: 768px) {
-  .about-container {
-    padding: 1rem;
-  }
-
-  .download-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* Other media queries remain the same */
 }
 </style>

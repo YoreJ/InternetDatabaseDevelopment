@@ -9,7 +9,7 @@
           <div class="stat-item">
             <i class="ni ni-books text-primary"></i>
             <!-- 修改显示方式，避免除法运算错误 -->
-            <h3>{{ Math.floor(pagecount/10) || 0 }}</h3>
+            <h3>{{ total || 0 }}</h3>
             <p>文章总数</p>
           </div>
           <div class="stat-item">
@@ -62,7 +62,8 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="pagecount"
+          :total="total"
+          :page-size="8"
           hide-on-single-page
           @current-change="handlePageChange"
         />
@@ -80,6 +81,7 @@ export default {
     return {
       articleList: [],
       pagecount: 0, // 初始值改为0
+      total: 0,
       loading: false,
       currentDate: new Date().toLocaleDateString('zh-CN')
     }
@@ -87,6 +89,7 @@ export default {
   mounted() {
     this.getUrl()
     this.getpage()
+    this.getTotal()
   },
   methods: {
     async getUrl() {
@@ -96,6 +99,19 @@ export default {
         console.log('文章数据:', response.data) // 调试日志
         if (Array.isArray(response.data)) {
           this.articleList = response.data
+        }
+      } catch (error) {
+        console.error('请求失败', error)
+      } finally {
+        this.loading = false
+      }
+    },
+    async getTotal() {
+      this.loading = true
+      try {
+        const response = await axios.post('http://localhost:8080/api/getarticletotal')
+        if (response.data.status === 1) {
+          this.total = response.data.count
         }
       } catch (error) {
         console.error('请求失败', error)
@@ -121,7 +137,7 @@ export default {
       try {
         const response = await axios.post('http://localhost:8080/api/getarticlepagecount')
         console.log('页数数据:', response.data) // 调试日志
-        this.pagecount = response.data * 10
+        this.pagecount = response.data.pageCount * 8
       } catch (error) {
         console.error('请求失败', error)
       }

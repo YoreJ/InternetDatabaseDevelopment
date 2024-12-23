@@ -8,7 +8,7 @@
         <div class="hero-stats">
           <div class="stat-item" @click="addWebView">
             <h3>{{ viewCount }}</h3>
-            <p>今日访问</p>
+            <p>网站访问</p>
           </div>
           <div class="stat-item">
             <h3>40+</h3>

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 使用 Gii 生成了 Students 的 CRUD
+ */
+
 namespace app\models;
 
 use yii\base\Model;
@@ -18,7 +23,7 @@ class StudentsSearch extends Students
     {
         return [
             [['id'], 'integer'],
-            [['name', 'student_id', 'role', 'file_path'], 'safe'],
+            [['name', 'student_id', 'role', 'file_path', 'email', 'github', 'wechat'], 'safe'],
         ];
     }
 
@@ -64,7 +69,10 @@ class StudentsSearch extends Students
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'student_id', $this->student_id])
             ->andFilterWhere(['like', 'role', $this->role])
-            ->andFilterWhere(['like', 'file_path', $this->file_path]);
+            ->andFilterWhere(['like', 'file_path', $this->file_path])
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'github', $this->github])
+            ->andFilterWhere(['like', 'wechat', $this->wechat]);
 
         return $dataProvider;
     }

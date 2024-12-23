@@ -8,7 +8,7 @@
         <div class="video-stats">
           <div class="stat-item">
             <i class="ni ni-camera-compact text-primary"></i>
-            <h3>{{ Math.floor(pagecount/8) || 0 }}</h3>
+            <h3>{{ total || 0 }}</h3>
             <p>视频总数</p>
           </div>
           <div class="stat-item">
@@ -64,6 +64,7 @@
           background
           layout="prev, pager, next"
           :total="pagecount"
+          :page-size="12"
           hide-on-single-page
           @current-change="handlePageChange"
         />
@@ -85,6 +86,7 @@ export default {
     return {
       movieList: [],
       pagecount: 0,
+      total: 0,
       loading: false,
       currentDate: new Date().toLocaleDateString('zh-CN')
     }
@@ -93,6 +95,7 @@ export default {
   mounted() {
     this.getUrl()
     this.getpage()
+    this.getTotal()
   },
 
   methods: {
@@ -104,6 +107,22 @@ export default {
       } catch (error) {
         console.error('请求失败', error)
       } finally {
+        this.loading = false
+      }
+    },
+
+    async getTotal() {
+      this.loading = true
+      try {
+        const response = await axios.post('http://localhost:8080/api/getvideototal')
+        if (response.data.status === 1) {
+          this.total = response.data.count
+        }
+      } 
+      catch (error) {
+        console.error('请求失败', error)
+      } 
+      finally {
         this.loading = false
       }
     },
@@ -124,7 +143,8 @@ export default {
     async getpage() {
       try {
         const response = await axios.post('http://localhost:8080/api/getvideopagecount')
-        this.pagecount = response.data * 8
+        console.log('页数数据:', response.data)
+        this.pagecount = response.data.pagecount * 12
       } catch (error) {
         console.error('请求失败', error)
       }

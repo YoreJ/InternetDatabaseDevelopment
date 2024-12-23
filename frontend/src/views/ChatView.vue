@@ -114,12 +114,49 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      userID: '',
       userInput: '',
       messages: [],
       isSending: false
     }
   },
+  async mounted() {
+    this.userID = sessionStorage.getItem('UserID');
+    await this.getConversation()
+  },
   methods: {
+    async getConversation() {
+      // 在获取历史消息前先尝试创建对话
+      try {
+        const createConv = await axios.get(`http://localhost:8080/api/addonversation?UserID=${this.userID}`)
+        if (createConv.data.status === 1) {
+          console.log('Conversation created successfully:', createConv.data.conversation)
+        } else {
+          console.warn('Failed to create conversation:', createConv.data.message)
+        }
+      } catch (err) {
+        console.error('Create conversation error:', err)
+      }
+
+      // 获取历史消息
+      // try {
+      //   const response = await axios.get('http://localhost:8080/api/chat')
+      //   this.messages = response.data.messages
+      //   this.$nextTick(() => {
+      //     this.scrollToBottom()
+      //   })
+      // } catch (error) {
+      //   console.error('Error:', error)
+      //   this.messages = [
+      //     {
+      //       id: Date.now(),
+      //       sender: 'System',
+      //       text: '无法获取历史消息，请刷新页面重试'
+      //     }
+      //   ]
+      // }
+    },
+    
     formatTime(timestamp) {
       const date = new Date(timestamp)
       return date.toLocaleTimeString('zh-CN', { 
@@ -147,7 +184,10 @@ export default {
       try {
         const response = await axios.post(
           'http://localhost:8080/api/chat',
-          { message: userMessage },
+          { 
+            UserID: this.userID,
+            message: userMessage 
+          },
           {
             headers: {
               'Content-Type': 'application/json'

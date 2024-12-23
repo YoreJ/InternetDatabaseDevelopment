@@ -25,6 +25,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'file_path') ?>
 
+    <?php // echo $form->field($model, 'email') ?>
+
+    <?php // echo $form->field($model, 'github') ?>
+
+    <?php // echo $form->field($model, 'wechat') ?>
+
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>

@@ -97,9 +97,9 @@ html, body {
 .app-container {
   flex: 1;
   width: 100%;
-  max-width: 1500px;  /* 减小最大宽度 */
-  margin: 0 auto;
-  padding: -10px;      /* 减小内边距 */
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   position: relative;
 }
 

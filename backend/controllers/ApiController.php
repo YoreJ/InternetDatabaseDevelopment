@@ -1,10 +1,20 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 添加全部接口
+ * 包括：登录、注册、获取用户信息、更新头像、聊天机器人、获取聊天记录、
+ * 获取文章、添加文章、删除文章、增加文章访问量、喜欢文章、获取文章喜欢数、获取是否喜欢文章、评论文章、显示文章评论、删除文章评论、获取文章页数、获取文章总数、
+ * 获取视频、添加视频、删除视频、增加视频访问量、喜欢视频、获取视频喜欢数、获取是否喜欢视频、评论视频、显示视频评论、删除视频评论、获取视频页数、获取视频总数、
+ * 获取学生、获取所有学生
+ */
+
 namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 use app\models\Users;
 use app\models\UsersSearch;
@@ -156,12 +166,14 @@ class ApiController extends Controller
         $user = Users::findOne($userId);
 
         if ($user !== null) {
+            $avatar = \Yii::$app->urlManager->createAbsoluteUrl(['src/avatar/' . $user->Avatar]);
             return [
                 'status' => 1,
                 'user' => [
-                    'UserID' => $user->UserID,
-                    'Username' => $user->Username,
-                    'Role' => $user->Role,
+                    'userID' => $user->UserID,
+                    'username' => $user->Username,
+                    'role' => $user->Role,
+                    'avatar' => $avatar,
                 ],
             ];
         } 
@@ -173,29 +185,105 @@ class ApiController extends Controller
         }
     }
 
+    public function actionUpdateavatar()
+    {
+        $request = Yii::$app->request;
+        $userId = $request->get('userId'); // 从GET请求中获取用户ID
+    
+        if ($userId === null) {
+            return $this->asJson(['success' => false, 'message' => '用户ID未提供。']);
+        }
+    
+        $uploadedFile = UploadedFile::getInstanceByName('avatar');
+        if ($uploadedFile) {
+            $allowedExtensions = ['jpg', 'png', 'gif', 'jpeg'];
+            if (!in_array(strtolower($uploadedFile->extension), $allowedExtensions)) {
+                return $this->asJson(['success' => false, 'message' => '无效的文件类型。']);
+            }
+    
+            $avatarDir = Yii::getAlias('@webroot/src/avatar/');
+            if (!is_dir($avatarDir)) {
+                mkdir($avatarDir, 0755, true);
+            }
+    
+            $fileName = uniqid() . '.' . $uploadedFile->extension;
+            $filePath = 'src/avatar/' . $fileName;
+            $fullPath = Yii::getAlias('@webroot/') . $filePath;
+    
+            if ($uploadedFile->saveAs($fullPath)) {
+                $user = Users::findOne($userId);
+                if ($user === null) {
+                    return $this->asJson(['success' => false, 'message' => '用户未找到。']);
+                }
+    
+                $user->Avatar = $fileName;
+                if ($user->save()) {
+                    $avatarUrl = Yii::$app->urlManager->createAbsoluteUrl(['src/avatar/' . $user->Avatar]);
+                    return $this->asJson([
+                        'success' => true,
+                        'message' => '头像更新成功。',
+                        'url' => $avatarUrl
+                    ]);
+                } else {
+                    return $this->asJson(['success' => false, 'message' => '更新头像时发生错误。']);
+                }
+            } else {
+                return $this->asJson(['success' => false, 'message' => '保存头像文件失败。']);
+            }
+        }
+        return $this->asJson(['success' => false, 'message' => '未收到头像文件。']);
+    }
+
     public function actionChatbot()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    
+
         $rawBody = \Yii::$app->request->getRawBody();
         $data = json_decode($rawBody, true);
         $userMessage = isset($data['message']) ? $data['message'] : null;
-    
-        if ($userMessage !== null) {
-            // $botReply = "You said: " . $userMessage;
-    
-            // if (strpos($userMessage, 'hello') !== false) {
-            //     // $botReply = 'Hi there! How can I help you today?';
-            // }
+        $userID = isset($data['UserID']) ? $data['UserID'] : null;
 
-            $botReply = $this->callXfYunModel($userMessage);
-    
-            return ['status' => 1, 'reply' => $botReply];
-        } 
-        else {
-            return ['status' => 0, 'message' => 'No message received'];
+        if (!$userMessage || !$userID) {
+            return ['status' => 0, 'message' => '缺少必要参数'];
         }
-    }   
+
+        // 获取最新对话ID
+        $latestConversation = Conversations::find()
+            ->where(['UserID' => $userID])
+            ->orderBy(['ConversationID' => SORT_DESC])
+            ->one();
+
+        if (!$latestConversation) {
+            return ['status' => 0, 'message' => '未找到有效对话'];
+        }
+
+        // 保存用户消息
+        $userMsg = new Messages();
+        $userMsg->ConversationID = $latestConversation->ConversationID;
+        $userMsg->Sender = 'user';
+        $userMsg->Content = $userMessage;
+        $userMsg->Timestamp = date('Y-m-d H:i:s');
+
+        if (!$userMsg->save()) {
+            return ['status' => 0, 'message' => '保存用户消息失败'];
+        }
+
+        // 获取AI回复
+        $botReply = $this->callXfYunModel($userMessage);
+
+        // 保存AI回复
+        $aiMsg = new Messages();
+        $aiMsg->ConversationID = $latestConversation->ConversationID;
+        $aiMsg->Sender = 'model';
+        $aiMsg->Content = $botReply;
+        $aiMsg->Timestamp = date('Y-m-d H:i:s');
+
+        if (!$aiMsg->save()) {
+            return ['status' => 0, 'message' => '保存AI回复失败'];
+        }
+
+        return ['status' => 1, 'reply' => $botReply];
+    } 
     
     /**
      * 使用 iFlytek 的 WebSocket 接口调用大模型
@@ -318,6 +406,45 @@ class ApiController extends Controller
         return $authAddr;
     }
 
+    public function actionAddonversation()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        
+        $userID = \Yii::$app->request->get('UserID');
+
+        // 1. 如果该用户已存在对话，则查找最近一次对话并设置结束时间
+        $lastConversation = Conversations::find()
+            ->where(['UserID' => $userID])
+            ->orderBy(['ConversationID' => SORT_DESC])
+            ->one();
+
+        if ($lastConversation) {
+            $lastConversation->EndedAt = date('Y-m-d H:i:s');
+            $lastConversation->Status = 'ended';
+            $lastConversation->save(false); // 不需要再验证，直接保存
+        }
+
+        // 2. 创建新的对话
+        $model = new Conversations();
+        $model->UserID = $userID;
+        $model->StartedAt = date('Y-m-d H:i:s');
+        $model->Status = 'active';
+
+        if ($model->save()) {
+            return [
+                'status' => 1,
+                'message' => 'Conversation created successfully',
+                'conversation' => $model
+            ];
+        } else {
+            return [
+                'status' => 0,
+                'message' => 'Failed to create conversation',
+                'errors' => $model->errors
+            ];
+        }
+    }
+
     public function actionGetarticle()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -390,17 +517,37 @@ class ApiController extends Controller
     public function actionAddarticle()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-        $rawBody = \Yii::$app->request->getRawBody();
-        $data = json_decode($rawBody, true);
-        $title = isset($data['title']) ? $data['title'] : null;
-        $content = isset($data['content']) ? $data['content'] : null;
-        $userId = isset($data['userId']) ? $data['userId'] : null;
-
-        if ($title === null || $content === null || $userId === null) {
+    
+        $title = \Yii::$app->request->get('title');
+        $content = \Yii::$app->request->get('content');
+        $userId = \Yii::$app->request->get('userId');
+    
+        if ($title === null) {
             return [
                 'status' => 0,
-                'message' => 'Title, content, and user ID are required.',
+                'message' => 'Title is required.',
+            ];
+        }
+    
+        if ($content === null) {
+            return [
+                'status' => 0,
+                'message' => 'Content is required.',
+            ];
+        }
+    
+        if ($userId === null) {
+            return [
+                'status' => 0,
+                'message' => 'User ID is required.',
+            ];
+        }
+
+        $user = Users::findOne($userId);
+        if ($user === null) {
+            return [
+                'status' => 0,
+                'message' => 'Invalid User ID.',
             ];
         }
 
@@ -408,8 +555,8 @@ class ApiController extends Controller
         $article->Title = $title;
         $article->Content = $content;
         $article->PublishedAt = date('Y-m-d H:i:s');
-        $article->UserID = $userId;
-
+        $article->AuthorID = $userId;
+    
         if ($article->save()) {
             return [
                 'status' => 1,
@@ -479,6 +626,20 @@ class ApiController extends Controller
         return [
             'status' => 1,
             'pageCount' => $pageCount,
+        ];
+    }
+
+    public function actionGetarticletotal()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $searchModel = new ArticlesSearch();
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $totalCount = $dataProvider->getTotalCount();
+
+        return [
+            'status' => 1,
+            'count' => $totalCount,
         ];
     }
 
@@ -761,47 +922,125 @@ class ApiController extends Controller
 
     public function actionAddvideo()
     {
+        ini_set('memory_limit', '256M');
+        ini_set('max_execution_time', '300');
+
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     
+        // 获取POST参数
         $title = \Yii::$app->request->post('title');
-        $url = \Yii::$app->request->post('url');
         $userId = \Yii::$app->request->post('userId');
-        $pictureUrl = \Yii::$app->request->post('pictureUrl');
+
+        // 获取上传的文件
+        $videoFile = UploadedFile::getInstanceByName('video');
+        $coverFile = UploadedFile::getInstanceByName('cover');
     
-        if ($title === null || $url === null || $userId === null) {
+        // 检查必填字段
+        if ($title === null || $userId === null || $videoFile === null || $coverFile === null) {
             return [
                 'status' => 0,
-                'message' => 'Title, URL, and User ID are required.',
+                'message' => '标题、视频、封面和用户 ID 是必需的。',
+            ];
+        }   
+    
+        // 验证用户是否存在
+        $user = Users::findOne($userId);
+        if ($user === null) {
+            return [
+                'status' => 0,
+                'message' => '无效的用户 ID。',
+            ];
+        }
+    
+        // 验证视频文件
+        $allowedVideoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv'];
+        $videoExtension = strtolower($videoFile->extension);
+        if (!in_array($videoExtension, $allowedVideoExtensions)) {
+            return [
+                'status' => 0,
+                'message' => '无效的视频文件类型。',
+            ];
+        }
+    
+        // 验证封面文件
+        $allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $coverExtension = strtolower($coverFile->extension);
+        if (!in_array($coverExtension, $allowedImageExtensions)) {
+            return [
+                'status' => 0,
+                'message' => '无效的图片文件类型。',
+            ];
+        }
+    
+        // 保存视频文件
+        $videoDir = Yii::getAlias('@webroot/src/videos/');
+        if (!is_dir($videoDir)) {
+            if (!mkdir($videoDir, 0755, true)) {
+                return [
+                    'status' => 0,
+                    'message' => '无法创建视频上传目录。',
+                ];
+            }
+        }
+        $uniqueVideoName = uniqid('video_', false) . '.' . $videoFile->extension;
+        $videoPath = 'src/videos/' . $uniqueVideoName;
+        $fullVideoPath = Yii::getAlias('@webroot/') . $videoPath;
+
+        if (!$videoFile->saveAs($fullVideoPath)) {
+            return [
+                'status' => 0,
+                'message' => '保存视频文件失败。',
+            ];
+        }
+
+        $coverDir = Yii::getAlias('@webroot/src/pic/');
+        if (!is_dir($coverDir)) {
+            if (!mkdir($coverDir, 0755, true)) {
+                unlink($fullVideoPath);
+                return [
+                    'status' => 0,
+                    'message' => '无法创建封面上传目录。',
+                ];
+            }
+        }
+        $uniqueCoverName = uniqid('cover_', true) . '.' . $coverFile->extension;
+        $coverPath = 'src/pic/' . $uniqueCoverName;
+        $fullCoverPath = Yii::getAlias('@webroot/') . $coverPath;
+
+        if (!$coverFile->saveAs($fullCoverPath)) {
+            unlink($fullVideoPath);
+            return [
+                'status' => 0,
+                'message' => '保存封面文件失败。',
             ];
         }
     
         $video = new Videos();
         $video->Title = $title;
-        $video->URL = $url;
+        $video->URL = $uniqueVideoName;
         $video->UserID = $userId;
-        $video->PictureURL = $pictureUrl;
+        $video->PictureURL = $uniqueCoverName;
         $video->UploadedAt = date('Y-m-d H:i:s');
     
+        // 尝试保存视频
         if ($video->save()) {
             return [
                 'status' => 1,
-                'message' => 'Video added successfully.',
+                'message' => '视频添加成功。',
                 'video' => [
                     'VideoID' => $video->VideoID,
-                    'Title' => $video->Title,
-                    'URL' => $video->URL,
-                    'UserID' => $video->UserID,
-                    'UploadedAt' => $video->UploadedAt,
-                    'UpdatedAt' => $video->UpdatedAt,
-                    'ViewCount' => $video->ViewCount,
-                    'LikeCount' => $video->LikeCount,
-                    'PictureURL' => $video->PictureURL,
                 ],
             ];
         } else {
+            unlink($fullVideoPath);
+            if ($coverPath !== null) {
+                unlink($fullCoverPath);
+            }
+    
+            \Yii::error('保存视频失败: ' . json_encode($video->errors), __METHOD__);
             return [
                 'status' => 0,
-                'message' => 'Failed to add video.',
+                'message' => '视频添加失败。',
                 'errors' => $video->errors,
             ];
         }
@@ -1105,6 +1344,18 @@ class ApiController extends Controller
         ];
     }
 
+    public function actionGetvideototal()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $count = Videos::find()->count();
+
+        return [
+            'status' => 1,
+            'count' => $count,
+        ];
+    }
+
     public function actionGetstudent()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1138,7 +1389,37 @@ class ApiController extends Controller
                 'student_id' => $student->student_id,
                 'role' => $student->role,
                 'file_path' => $studentUrl,
+                'email' => $student->email,
+                'github' => $student->github,
+                'wechat' => $student->wechat,
             ],
+        ];
+    }
+
+    public function actionGetallstudents()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $students = Students::find()->all();
+
+        $studentData = [];
+        foreach ($students as $student) {
+            $studentUrl = \Yii::$app->urlManager->createAbsoluteUrl(['src/personal/' . $student->file_path]);
+            $studentData[] = [
+                'id' => $student->id,
+                'name' => $student->name,
+                'student_id' => $student->student_id,
+                'role' => $student->role,
+                'file_path' => $studentUrl,
+                'email' => $student->email,
+                'github' => $student->github,
+                'wechat' => $student->wechat,
+            ];
+        }
+
+        return [
+            'status' => 1,
+            'students' => $studentData,
         ];
     }
 }

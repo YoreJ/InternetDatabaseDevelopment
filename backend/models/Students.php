@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Coding by JiangYu 2210705
+ * 使用 Gii 生成了 Students 的 CRUD
+ */
+
 namespace app\models;
 
 use Yii;
@@ -12,6 +17,9 @@ use Yii;
  * @property string|null $student_id
  * @property string|null $role
  * @property string|null $file_path
+ * @property string|null $email
+ * @property string|null $github
+ * @property string|null $wechat
  */
 class Students extends \yii\db\ActiveRecord
 {
@@ -29,7 +37,7 @@ class Students extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'role'], 'string', 'max' => 100],
+            [['name', 'role', 'email', 'github', 'wechat'], 'string', 'max' => 100],
             [['student_id'], 'string', 'max' => 20],
             [['file_path'], 'string', 'max' => 255],
             [['student_id'], 'unique'],
@@ -47,6 +55,9 @@ class Students extends \yii\db\ActiveRecord
             'student_id' => 'Student ID',
             'role' => 'Role',
             'file_path' => 'File Path',
+            'email' => 'Email',
+            'github' => 'Github',
+            'wechat' => 'Wechat',
         ];
     }
 }

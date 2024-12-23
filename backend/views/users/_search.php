@@ -23,7 +23,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Role') ?>
 
-    <?= $form->field($model, 'CreatedAt') ?>
+    <?= $form->field($model, 'Avatar') ?>
+
+    <?php // echo $form->field($model, 'CreatedAt') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

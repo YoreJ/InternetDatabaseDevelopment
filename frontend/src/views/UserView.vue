@@ -15,14 +15,14 @@
             </div>
           </div>
           <div class="user-stats">
-            <div class="stat-item">
+            <!-- <div class="stat-item">
               <h3>{{ articleCount || 0 }}</h3>
               <p>已发布文章</p>
             </div>
             <div class="stat-item">
               <h3>{{ videoCount || 0 }}</h3>
               <p>已发布视频</p>
-            </div>
+            </div> -->
             <div class="stat-item">
               <h3>{{ userInfo.username }}</h3>
               <p>用户名</p>
@@ -156,18 +156,22 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'UserProfile',
   
   data() {
     return {
-      defaultAvatar: '/path/to/default/avatar.png',
+      defaultAvatar: './src/avatar.png',
       isSubmitting: false,
       loadingMessage: '',
       uploadProgress: 0,
       isVideoUploading: false,
       userInfo: {
+        userID: -1,
         username: '',
+        role: '',
         avatar: ''
       },
       currentTab: 'article',
@@ -217,10 +221,17 @@ export default {
           this.$router.push('/login')
           return
         }
-
-        const response = await this.$axios.get(`/api/user/info?userId=${userID}`)
-        this.userInfo = response.data
-      } catch (error) {
+        console.log(userID)
+        const response = await axios.get('http://localhost:8080/api/getuser?userId=' + userID)
+        if (response.data.status === 1) {
+          this.userInfo = response.data.user
+        } 
+        else {
+          this.errorMessage = response.data.message || '失败.'
+        }
+        // console.log(this.userInfo)
+      } 
+      catch (error) {
         this.handleError(error, '获取用户信息失败')
       }
     },
@@ -243,9 +254,10 @@ export default {
       this.loadingMessage = '正在上传头像...'
 
       try {
-        const response = await this.$axios.post('/api/user/avatar', formData, {
+        const response = await axios.post('http://localhost:8080/api/updateavatar?userId=' + sessionStorage.getItem('UserID'), formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
+        console.log(response)
 
         this.userInfo.avatar = response.data.url
         this.$message.success('头像更新成功')
@@ -266,30 +278,9 @@ export default {
         return
       }
 
-      const formData = new FormData()
-      formData.append('video', file)
-
-      this.isVideoUploading = true
-      this.uploadProgress = 0
-
-      try {
-        const response = await this.$axios.post('/api/upload/video', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-          onUploadProgress: (progressEvent) => {
-            this.uploadProgress = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            )
-          }
-        })
-
-        this.videoForm.videoFile = file
-        this.videoForm.videoUrl = response.data.url
-        this.$message.success('视频上传成功')
-      } catch (error) {
-        this.handleError(error, '视频上传失败')
-      } finally {
-        this.isVideoUploading = false
-      }
+      this.videoForm.videoFile = file
+      this.videoForm.videoUrl = URL.createObjectURL(file)
+      this.$message.success('视频已选择，请点击发布上传')
     },
 
     // 封面上传处理
@@ -302,24 +293,9 @@ export default {
         return
       }
 
-      const formData = new FormData()
-      formData.append('cover', file)
-
-      this.isSubmitting = true
-      this.loadingMessage = '正在上传封面...'
-
-      try {
-        const response = await this.$axios.post('/api/upload/cover', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        })
-
-        this.videoForm.coverUrl = response.data.url
-        this.$message.success('封面上传成功')
-      } catch (error) {
-        this.handleError(error, '封面上传失败')
-      } finally {
-        this.isSubmitting = false
-      }
+      this.videoForm.coverFile = file
+      this.videoForm.coverUrl = URL.createObjectURL(file)
+      this.$message.success('封面已选择，请点击发布上传')
     },
 
     // 发布文章
@@ -330,17 +306,18 @@ export default {
       this.loadingMessage = '正在发布文章...'
 
       try {
-        const response = await this.$axios.post('/api/article/publish', {
-          userId: sessionStorage.getItem('UserID'),
-          title: this.articleForm.title,
-          content: this.articleForm.content
-        })
+        const titleEncoded = encodeURIComponent(this.articleForm.title)
+        const contentEncoded = encodeURIComponent(this.articleForm.content)
+        const userId = sessionStorage.getItem('UserID')
+        const response = await axios.get('http://localhost:8080/api/addarticle?title=' + titleEncoded + '&content=' + contentEncoded + '&userId=' + userId)
+        console.log(response)
 
         if (response.data.status === 1) {
           this.$message.success('文章发布成功')
           this.resetArticleForm()
-        } else {
-          throw new Error('发布失败')
+        } 
+        else {
+          throw new Error(response.data.message || '发布失败')
         }
       } catch (error) {
         this.handleError(error, '文章发布失败')
@@ -354,21 +331,31 @@ export default {
       if (!this.validateVideoForm()) return
 
       this.isSubmitting = true
-      this.loadingMessage = '正在发布视频...'
+      this.loadingMessage = '正在上传并发布视频...'
 
       try {
-        const response = await this.$axios.post('/api/video/publish', {
-          userId: sessionStorage.getItem('UserID'),
-          title: this.videoForm.title,
-          coverUrl: this.videoForm.coverUrl,
-          videoUrl: this.videoForm.videoUrl
+        const userId = sessionStorage.getItem('UserID')
+        const formData = new FormData()
+        formData.append('userId', userId)
+        formData.append('title', this.videoForm.title)
+        formData.append('video', this.videoForm.videoFile)
+        formData.append('cover', this.videoForm.coverFile)
+
+        for (let pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1])
+        }
+
+        const response = await axios.post('http://localhost:8080/api/addvideo', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         })
 
         if (response.data.status === 1) {
           this.$message.success('视频发布成功')
           this.resetVideoForm()
         } else {
-          throw new Error('发布失败')
+          throw new Error(response.data.message || '发布失败')
         }
       } catch (error) {
         this.handleError(error, '视频发布失败')
