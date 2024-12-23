@@ -222,7 +222,7 @@ export default {
         '2212180': 3,
         '2113927': 4
       };
-      return mapping[studentId] || 1;
+      return mapping[studentId] || 'example';
     }
   }
 }
